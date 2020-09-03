@@ -22,6 +22,7 @@ Src/DELEYS \
 Src/DS18B20 \
 Src/HD44780 \
 Src/NTC \
+Src/PWM_CTRL \
 Src/TIME_COUNTER \
 Src/UI \
 Src \

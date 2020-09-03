@@ -38,11 +38,12 @@ extern "C" {
 #include "UI.h"
 #include "ntc.h"
 #include "time_counter.h"
+#include "PWM_CTRL.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+TIM_HandleTypeDef htim1;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -65,10 +66,13 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define BUTTON_DOWN_Pin GPIO_PIN_13
 #define BUTTON_DOWN_GPIO_Port GPIOC
+#define BUTTON_DOWN_EXTI_IRQn EXTI15_10_IRQn
 #define BUTTON_EXIT_Pin GPIO_PIN_14
 #define BUTTON_EXIT_GPIO_Port GPIOC
+#define BUTTON_EXIT_EXTI_IRQn EXTI15_10_IRQn
 #define BUTTON_OK_Pin GPIO_PIN_15
 #define BUTTON_OK_GPIO_Port GPIOC
+#define BUTTON_OK_EXTI_IRQn EXTI15_10_IRQn
 #define ONE_WIRE_DATA1_Pin GPIO_PIN_3
 #define ONE_WIRE_DATA1_GPIO_Port GPIOA
 #define ONE_WIRE_DATA2_Pin GPIO_PIN_4
@@ -79,6 +83,7 @@ void Error_Handler(void);
 #define LED_GREEN_GPIO_Port GPIOA
 #define ZCD_Pin GPIO_PIN_7
 #define ZCD_GPIO_Port GPIOA
+#define ZCD_EXTI_IRQn EXTI9_5_IRQn
 #define LCD_D0_Pin GPIO_PIN_0
 #define LCD_D0_GPIO_Port GPIOB
 #define LCD_D1_Pin GPIO_PIN_1
@@ -87,6 +92,7 @@ void Error_Handler(void);
 #define LCD_D1B2_GPIO_Port GPIOB
 #define BUTTON_UP_Pin GPIO_PIN_12
 #define BUTTON_UP_GPIO_Port GPIOB
+#define BUTTON_UP_EXTI_IRQn EXTI15_10_IRQn
 #define BUZZER_Pin GPIO_PIN_8
 #define BUZZER_GPIO_Port GPIOA
 #define FAN_CTRL_Pin GPIO_PIN_9

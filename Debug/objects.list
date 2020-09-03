@@ -20,6 +20,7 @@
 "Src/DS18B20/ds18b20.o"
 "Src/HD44780/HD44780.o"
 "Src/NTC/ntc.o"
+"Src/PWM_CTRL/PWM_CTRL.o"
 "Src/TIME_COUNTER/time_counter.o"
 "Src/UI/UI.o"
 "Src/main.o"

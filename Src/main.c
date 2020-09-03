@@ -45,7 +45,6 @@ ADC_HandleTypeDef hadc1;
 
 SPI_HandleTypeDef hspi2;
 
-TIM_HandleTypeDef htim1;
 
 UART_HandleTypeDef huart3;
 
@@ -100,10 +99,11 @@ int main(void)
   MX_ADC1_Init();
   MX_SPI2_Init();
   MX_TIM1_Init();
-  MX_USART3_UART_Init();
+  //MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   LCD_Initalize();
   ds18b20_initalize();
+  //pwmctrl_enable_timer_irq();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -111,7 +111,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  ui_handler();
+	  //ui_handler();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -405,7 +405,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : BUTTON_DOWN_Pin BUTTON_EXIT_Pin BUTTON_OK_Pin */
   GPIO_InitStruct.Pin = BUTTON_DOWN_Pin|BUTTON_EXIT_Pin|BUTTON_OK_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
@@ -420,7 +420,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : ZCD_Pin */
   GPIO_InitStruct.Pin = ZCD_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(ZCD_GPIO_Port, &GPIO_InitStruct);
 
@@ -437,9 +437,16 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : BUTTON_UP_Pin */
   GPIO_InitStruct.Pin = BUTTON_UP_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(BUTTON_UP_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 }
 

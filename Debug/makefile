@@ -11,6 +11,7 @@ RM := rm -rf
 -include Startup/subdir.mk
 -include Src/UI/subdir.mk
 -include Src/TIME_COUNTER/subdir.mk
+-include Src/PWM_CTRL/subdir.mk
 -include Src/NTC/subdir.mk
 -include Src/HD44780/subdir.mk
 -include Src/DS18B20/subdir.mk
