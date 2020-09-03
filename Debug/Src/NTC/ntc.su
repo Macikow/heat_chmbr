@@ -1,0 +1,6 @@
+ntc.c:17:6:ntc_start_continous_converting	8	static
+ntc.c:22:8:ntc_convert_celsius_to_kelvin	24	static
+ntc.c:27:8:ntc_convert_kelvin_to_celsius	24	static
+ntc.c:32:8:ntc_convert_ADC_to_double	80	static
+ntc.c:59:9:ntc_convert_float_to_string	40	static
+ntc.c:115:6:ntc_initalize	8	static

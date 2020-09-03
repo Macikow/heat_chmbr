@@ -1,0 +1,13 @@
+HD44780.c:14:6:LCD_Data_Bus_Input	4	static
+HD44780.c:17:6:LCD_Data_Bus_Output	4	static
+HD44780.c:22:6:_LCD_Write	16	static
+HD44780.c:38:9:_LCD_Read	16	static
+HD44780.c:57:6:LCD_WriteCommand	16	static
+HD44780.c:69:9:LCD_ReadStatus	8	static
+HD44780.c:79:6:LCD_WriteData	16	static
+HD44780.c:90:9:LCD_ReadData	8	static
+HD44780.c:99:6:LCD_WriteText	16	static
+HD44780.c:107:6:LCD_GoTo	16	static
+HD44780.c:115:6:LCD_Clear	8	static
+HD44780.c:124:6:LCD_Home	8	static
+HD44780.c:133:6:LCD_Initalize	16	static

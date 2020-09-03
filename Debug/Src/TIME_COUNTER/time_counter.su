@@ -1,0 +1,5 @@
+time_counter.c:23:6:tc_set_counter	16	static
+time_counter.c:30:6:tc_run_downcounter	4	static
+time_counter.c:36:6:tc_stop_downcounter	4	static
+time_counter.c:42:6:tc_down_counter	4	static
+time_counter.c:86:6:tc_convert_time_to_string	16	static
