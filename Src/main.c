@@ -41,7 +41,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-ADC_HandleTypeDef hadc1;
+
 
 SPI_HandleTypeDef hspi2;
 
@@ -225,6 +225,23 @@ static void MX_ADC1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN ADC1_Init 2 */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  hdma1.Instance = DMA1_Channel1;
+  hdma1.Init.Direction = DMA_PERIPH_TO_MEMORY;
+  hdma1.Init.PeriphInc = DMA_PINC_DISABLE;
+  hdma1.Init.MemInc = DMA_MINC_ENABLE;
+  hdma1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+  hdma1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+  hdma1.Init.Mode = DMA_CIRCULAR;
+  hdma1.Init.Priority = DMA_PRIORITY_HIGH;
+
+
+  HAL_ADCEx_Calibration_Start(&hadc1);
+  HAL_DMA_Init(&hdma1);
+  __HAL_LINKDMA(&hadc1, DMA_Handle, hdma1);
+
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_value, ADC_CHANNELS);
 
   /* USER CODE END ADC1_Init 2 */
 

@@ -44,11 +44,15 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 TIM_HandleTypeDef htim1;
+ADC_HandleTypeDef hadc1;
+DMA_HandleTypeDef hdma1;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
+#define ADC_CHANNELS 4
+ 
+uint16_t adc_value[ADC_CHANNELS];
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
