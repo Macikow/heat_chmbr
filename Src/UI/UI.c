@@ -14,8 +14,7 @@
 #define HEATING_STATUS_END 3
 
 
-#define UI_HANDLER_FLAG_FREE 0
-#define UI_HANDLER_FLAG_BUSY 1
+
 
 struct statusStruct
 {
@@ -34,7 +33,7 @@ struct statusStruct
 
 /* ui_handler_flag its busy flag its prevent
  * entering to ui_handler() few times with this same ms_counter value */
-volatile uint8_t ui_handler_flag;
+
 
 
 void ui_handler()
@@ -45,11 +44,11 @@ void ui_handler()
 
 	if( (HC_status.ds18b20_amount == 0) && (HC_status.ntc_amount == 0))
 	{
-		if((ms_counter/10) % 20 == 0)	LED_RED_GPIO_Port -> ODR ^= LED_RED_Pin;
+		if(ms_counter % 200 == 0)	LED_RED_GPIO_Port -> ODR ^= LED_RED_Pin;
 	}
 	else if(HC_status.ds18b20_amount == 0 || (HC_status.ntc_amount == 0))
 	{
-		if((ms_counter/10) % 50 == 0) LED_RED_GPIO_Port -> ODR ^= LED_RED_Pin;
+		if(ms_counter % 500 == 0) LED_RED_GPIO_Port -> ODR ^= LED_RED_Pin;
 	}
 
 	// green led control 
@@ -63,7 +62,7 @@ void ui_handler()
 	}
 	else if(HC_status.heating_status == HEATING_STATUS_STOP)
 	{
-		if(ms_counter%500 == 0)
+		if(ms_counter % 499 == 0)
 		{
 			LED_GREEN_GPIO_Port->BRR = LED_GREEN_Pin;
 		}
@@ -107,14 +106,7 @@ void ui_change_heating_status(uint8_t status)
 /***
  * 	function is calling in SysTick IRQ Handler
  */
-inline void ui_increment_ms_counter(void)
-{
-	ui_handler_flag = UI_HANDLER_FLAG_FREE;
-	if(++ms_counter >= 1000)
-	{
-		ms_counter = 0;
-	}
-}
+
 
 uint8_t ui_initalize(void)
 {

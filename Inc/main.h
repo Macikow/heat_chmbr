@@ -53,6 +53,10 @@ DMA_HandleTypeDef hdma1;
 #define ADC_CHANNELS 4
  
 uint16_t adc_value[ADC_CHANNELS];
+void increment_ms_counter(void);
+/* counts ms from 0 to 999  - its 1s overflow*/
+volatile uint16_t ms_counter;
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

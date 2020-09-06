@@ -184,9 +184,15 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-	ui_increment_ms_counter();
+	HAL_IncTick();
+	ui_handler_flag = UI_HANDLER_FLAG_FREE;
+	ntc_handler_flag = NTC_HANDLER_FLAG_FREE;
+	if(++ms_counter >= 1000)
+	{
+		ms_counter = 0;
+	}
   /* USER CODE END SysTick_IRQn 0 */
-  HAL_IncTick();
+
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
   /* USER CODE END SysTick_IRQn 1 */
