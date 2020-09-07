@@ -6,6 +6,14 @@
  */
 #include "main.h"
 
+#define LCD_COLS 16
+#define LCD_ROWS 2
+
+char lcd_buf[2][16];
+char lcd_buf_old[2][16];
+
+uint8_t write_buf_x_pos = 0;
+uint8_t write_buf_y_pos = 0;
 //-------------------------------------------------------------------------------------------------
 //
 // Funkcja zapisu bajtu do wyświetacza (bez rozróżnienia instrukcja/dane).
@@ -80,7 +88,7 @@ void LCD_WriteData(uint8_t data){
 	LCD_RS_GPIO_Port->ODR |= LCD_RS_Pin;
 	_LCD_Write(data);
 	//simple_delay_ms(10);
-	while(LCD_ReadStatus() & 0x80);
+	//while(LCD_ReadStatus() & 0x80);
 }
 //-------------------------------------------------------------------------------------------------
 //
@@ -158,9 +166,72 @@ void LCD_Initalize(void)
 	simple_delay_ms(1);
 	LCD_WriteCommand(HD44780_DISPLAY_ONOFF | HD44780_DISPLAY_ON | HD44780_CURSOR_OFF | HD44780_CURSOR_NOBLINK);
 
-	LCD_WriteText("HC_2020");
 }
 
+
+void lcd_buf_go_to(uint8_t buf_y, uint8_t buf_x )
+{
+	write_buf_x_pos = buf_x;
+	write_buf_y_pos = buf_y;
+}
+
+void lcd_buf_clear(void)
+{
+	for(uint8_t iy = 0 ; iy <2 ; iy++ ){
+		for(uint8_t ix = 0; ix < 16; ix ++)
+		{
+			lcd_buf[iy][ix] = ' ';
+		}
+	}
+}
+
+
+void lcd_buf_write_text(char * text)
+{
+	while(*text)
+	{
+		lcd_buf[write_buf_y_pos][write_buf_x_pos++] = *text++;
+	}
+}
+
+
+void lcd_handler()
+{
+	static uint8_t locate_flag = 0;
+	static uint8_t x = 0, y = 0;
+
+
+	if((LCD_ReadStatus() & 0x80) == 0)
+	{
+		if(x == LCD_COLS)
+		{
+				x = 0;
+				y++;
+				if(y == LCD_ROWS)
+				{
+					y=0;
+					LCD_GoTo(0,y);
+					return;
+				}
+		}
+		if( lcd_buf[y][x] != lcd_buf_old[y][x] )
+		{
+			if(!locate_flag)
+			{
+				LCD_GoTo(x,y);
+				locate_flag = 1;
+				return;
+			}
+			LCD_WriteData(lcd_buf[y][x]);
+			lcd_buf_old[y][x] = lcd_buf[y][x];
+		}
+		else
+		{
+			locate_flag = 0;
+		}
+		x++;
+	}
+}
 
 //void LCD_Display_temperature(uint16_t temperature, uint8_t config)
 //{
@@ -186,4 +257,3 @@ void LCD_Initalize(void)
 ////	}
 ////	str[char_counter] = '\0';
 //}
-

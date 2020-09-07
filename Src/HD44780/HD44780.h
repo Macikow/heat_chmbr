@@ -66,6 +66,12 @@ void LCD_Initalize(void);
 void LCD_Display_temperature(uint16_t temperature, uint8_t config);
 
 
+void lcd_buf_go_to(uint8_t buf_x , uint8_t buf_y);
+void lcd_buf_clear(void);
+void lcd_buf_write_text(char * text);
+void lcd_handler(void);
+
+
 
 
 #endif /* HD44780_HD44780_H_ */
