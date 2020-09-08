@@ -112,13 +112,16 @@ int main(void)
   ntc_init();
   //pwmctrl_enable_timer_irq();
   /* USER CODE END 2 */
+  lcd_buf_clear();
+  lcd_buf_go_to(0, 5);
+  lcd_buf_write_text("dupa");
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
-
+	  lcd_handler();
 	  ui_handler();
 	  ntc_handler(500, 0);
     /* USER CODE BEGIN 3 */

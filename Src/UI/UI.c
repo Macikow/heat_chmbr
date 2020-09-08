@@ -5,16 +5,13 @@
  *      Author: kowma
  */
 
-
 #include "main.h"
 
 #define HEATING_STATUS_STOP 0
 #define HEATING_STATUS_RUN 1
 #define HEATING_STATUS_ENDING 2
 #define HEATING_STATUS_END 3
-
-
-
+#define LCD_ROWS 2
 
 struct statusStruct
 {
@@ -30,6 +27,84 @@ struct statusStruct
 
 
 
+typedef struct menu_struct {
+
+ 	char * name;
+ 	struct menu_struct * next;
+ 	struct menu_struct * prev;
+ 	struct menu_struct * child;
+ 	struct menu_struct * parent;
+	void (*menu_function)(void);
+}menu_t;
+
+menu_t run_heating;
+menu_t set_time_heating;
+menu_t set_temp_heating;
+menu_t start_heating;
+menu_t stop_confirmation;
+menu_t run_param;
+menu_t run_mem1;
+menu_t set_time_mem1;
+menu_t set_temp_mem1;
+menu_t start_mem1;
+menu_t stop_confirmation_mem1;
+menu_t run_mem2;
+
+//menu_t *currentPointer = &menu1;
+
+uint8_t menu_index;
+uint8_t lcd_row_pos;
+
+
+menu_t run_heating = {"RUN HEATING", &run_mem1, &run_param, &set_time_heating, NULL, NULL};
+menu_t set_time_heating = {"TIME", NULL, NULL, &run_heating, &set_temp_heating, NULL/*set_time_heating_callback*/ };
+menu_t set_temp_heating = {"TEMPERATURE", NULL, NULL, &set_time_heating, &start_heating, NULL  };
+menu_t start_heating = {"HEATING ...", NULL, NULL, NULL, &stop_confirmation,	NULL };
+menu_t stop_confirmation = {"Are you sure?",NULL, NULL,&run_heating , NULL, NULL };
+menu_t run_mem1 = {"RUN MEMORY 1 " ,&run_mem2, &run_heating, &set_time_mem1, NULL, NULL};
+menu_t set_time_mem1 = {"TIME MEM1", NULL, NULL, &set_temp_mem1, &run_mem1, NULL };
+menu_t set_temp_mem1 = {"TEMP. MEM1", NULL, NULL, &start_mem1, &set_time_mem1,NULL };
+menu_t start_mem1 = {"HEATING ...",NULL, NULL, NULL, &stop_confirmation_mem1,NULL	 };
+menu_t stop_confirmation_mem1 = {"Are you sure?",NULL, NULL,&run_mem1 , NULL, NULL };
+menu_t run_mem2 = {"RUN MEMORY 2",&run_mem3, &run_mem1, &set_time_mem2, NULL, NULL};
+menu_t set_time_mem2 = {"TIME MEM2", NULL, NULL, &set_temp_mem2, &run_mem2,NULL };
+menu_t set_temp_mem2 = {"TEMP. MEM2", NULL, NULL, &start_mem2, &set_time_mem2,NULL };
+menu_t start_mem2 = {"HEATING ...",NULL, NULL, NULL, &stop_confirmation_mem2,NULL	 };
+menu_t stop_confirmation_mem2 = {"Are you sure?",NULL, NULL,&run_mem2 , NULL, NULL };
+menu_t run_mem3 = {"RUN MEMORY 3",&run_param, &run_mem2, &set_time_mem3, NULL, NULL};
+menu_t set_time_mem3 = {"TIME MEM3", NULL, NULL, &set_temp_mem3, &run_mem3, NULL};
+menu_t set_temp_mem3 = {"000.0", NULL, NULL, &start_mem3, &set_time_mem3, NULL};
+menu_t start_mem3 = {"HEATING ...",NULL, NULL, NULL, &stop_confirmation_mem3,	NULL };
+menu_t stop_confirmation_mem3 = {"Are you sure?",NULL, NULL,&run_mem3 , NULL, NULL };
+//menu_t run_servis = {"SERVIS SETTINGS", }
+menu_t run_param = {"DEV PARAMETERS", &run_heating, &run_mem3, &pid_param, NULL, NULL};
+menu_t pid_param = {"PID PARAMS", NULL,NULL,NULL,&run_param,NULL};
+	//menu_t temp_param = {"TEMP. PARAMS", }
+	//menu_t memmory_param = {"MEMMORY ", }
+	//menu_t pc_conn_param = {"PC CONNECTON", }
+	//menu_t firm_version = {"FIRMWARE VER.", }
+	//menu_t hadware_version = {"HARDWARE VER.", }
+	//menu_t add_sensors = {"EXTRA SENSORS", }
+	//menu_t pcb_temp = {"PCB TEMPERATURE", }
+
+void menu_next(void) {
+	if (currentPointer->next)
+	{
+		currentPointer = currentPointer->next;
+		menu_index++;
+		if (++lcd_row_pos > LCD_ROWS - 1) lcd_row_pos = LCD_ROWS - 1;
+	}
+	else
+	{
+		menu_index = 0;
+		lcd_row_pos = 0;
+
+		if (currentPointer->parent) currentPointer = (currentPointer->parent)->child;
+		else currentPointer = &menu1;
+	}
+	menu_refresh();
+}
+
 
 /* ui_handler_flag its busy flag its prevent
  * entering to ui_handler() few times with this same ms_counter value */
@@ -40,7 +115,7 @@ void ui_handler()
 {
 	if(ui_handler_flag == UI_HANDLER_FLAG_BUSY) return;
 
-	//red led control 
+	//red led control
 
 	if( (HC_status.ds18b20_amount == 0) && (HC_status.ntc_amount == 0))
 	{
@@ -51,7 +126,7 @@ void ui_handler()
 		if(ms_counter % 500 == 0) LED_RED_GPIO_Port -> ODR ^= LED_RED_Pin;
 	}
 
-	// green led control 
+	// green led control
 
 	if(HC_status.heating_status == HEATING_STATUS_RUN)
 	{
