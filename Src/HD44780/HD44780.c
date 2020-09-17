@@ -175,6 +175,11 @@ void lcd_buf_go_to(uint8_t buf_y, uint8_t buf_x )
 	write_buf_y_pos = buf_y;
 }
 
+void lcd_char(char c)
+{
+	lcd_buf[write_buf_y_pos][write_buf_x_pos] = c;
+}
+
 void lcd_buf_clear(void)
 {
 	for(uint8_t iy = 0 ; iy <2 ; iy++ ){

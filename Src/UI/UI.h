@@ -31,5 +31,10 @@ void ui_change_heating_status(uint8_t status);
 
 void ui_handler(void);
 
+void ui_menu_refresh(void);
+
+void ui_menu_next(void);
+
+
 
 #endif /* UI_UI_C_ */

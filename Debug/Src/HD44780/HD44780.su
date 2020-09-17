@@ -12,6 +12,7 @@ HD44780.c:123:6:LCD_Clear	8	static
 HD44780.c:132:6:LCD_Home	8	static
 HD44780.c:141:6:LCD_Initalize	8	static
 HD44780.c:172:6:lcd_buf_go_to	0	static
-HD44780.c:178:6:lcd_buf_clear	0	static
-HD44780.c:189:6:lcd_buf_write_text	4	static
-HD44780.c:198:6:lcd_handler	16	static
+HD44780.c:178:6:lcd_char	0	static
+HD44780.c:183:6:lcd_buf_clear	0	static
+HD44780.c:194:6:lcd_buf_write_text	4	static
+HD44780.c:203:6:lcd_handler	16	static

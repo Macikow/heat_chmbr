@@ -70,7 +70,7 @@ void lcd_buf_go_to(uint8_t buf_x , uint8_t buf_y);
 void lcd_buf_clear(void);
 void lcd_buf_write_text(char * text);
 void lcd_handler(void);
-
+void lcd_char(char c);
 
 
 

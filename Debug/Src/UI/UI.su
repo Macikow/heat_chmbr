@@ -1,0 +1,17 @@
+UI.c:104:6:menu_refresh	16	static
+UI.c:131:9:menu_get_index	0	static
+UI.c:147:6:ui_menu_next	8	static
+UI.c:166:6:ui_menu_prev	8	static
+UI.c:192:6:ui_handler	0	static
+UI.c:243:6:ui_change_ds18B20_status	0	static
+UI.c:248:6:ui_change_ntc_status	0	static
+UI.c:253:6:ui_change_heating_status	0	static
+UI.c:264:9:ui_initalize	0	static
+UI.c:274:13:UI_led_red_on	0	static
+UI.c:278:13:UI_led_red_off	0	static
+UI.c:282:13:UI_green_led_on	0	static
+UI.c:286:13:UI_green_led_off	0	static
+UI.c:290:13:UI_buzz_on	0	static
+UI.c:294:13:UI_buzz_off	0	static
+UI.c:299:6:UI_leds_check	8	static
+UI.c:318:6:UI_buzz_check	8	static
