@@ -14,6 +14,7 @@ RM := rm -rf
 -include Src/PWM_CTRL/subdir.mk
 -include Src/NTC/subdir.mk
 -include Src/HD44780/subdir.mk
+-include Src/EEPROM/subdir.mk
 -include Src/DS18B20/subdir.mk
 -include Src/DELEYS/subdir.mk
 -include Src/subdir.mk
@@ -48,7 +49,7 @@ all: HEAT_CHMBR.elf secondary-outputs
 
 # Tool invocations
 HEAT_CHMBR.elf: $(OBJS) $(USER_OBJS) C:\Users\kowma\stm_code\HEAT_CHMBR\STM32F103C8TX_FLASH.ld
-	arm-none-eabi-gcc -o "HEAT_CHMBR.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\kowma\stm_code\HEAT_CHMBR\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="HEAT_CHMBR.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "HEAT_CHMBR.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\kowma\stm_code\HEAT_CHMBR\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="HEAT_CHMBR.map" -Wl,--gc-sections -static  -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

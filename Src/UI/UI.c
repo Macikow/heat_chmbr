@@ -12,6 +12,8 @@
 #define HEATING_STATUS_ENDING 2
 #define HEATING_STATUS_END 3
 #define LCD_ROWS 2
+#define SET_OPTION_TIME 1
+#define SET_OPTION_TEMP 2
 
 struct statusStruct
 {
@@ -25,88 +27,124 @@ struct statusStruct
 	uint8_t pc_connection_status;
 }HC_status;
 
-
-typedef struct menu_struct menu_t;
-
-struct menu_struct {
-
- 	char * name;
-	menu_t * next;
-	menu_t * prev;
-	menu_t * child;
-	menu_t * parent;
+typedef struct menu_struct {
+	const char * name;
+	const struct menu_struct * next;
+	const struct menu_struct * prev;
+	const struct menu_struct * child;
+	const struct menu_struct * parent;
 	void (*menu_function)(void);
-
-};
-
-menu_t run_heating,set_temp_heating;
-menu_t stop_confirmation;
-menu_t set_time_heating;
-menu_t start_heating;
-menu_t run_mem1;
-menu_t set_time_mem1;
-menu_t set_temp_mem1 ;
-menu_t set_temp_mem1;
-menu_t start_mem1;
-menu_t stop_confirmation_mem1;
-menu_t run_mem2;
-menu_t set_time_mem2;
-menu_t set_temp_mem2 ;
-menu_t set_temp_mem2;
-menu_t start_mem2;
-menu_t stop_confirmation_mem2;
-menu_t run_mem3;
-menu_t set_time_mem3;
-menu_t set_temp_mem3 ;
-menu_t set_temp_mem3;
-menu_t start_mem3;
-menu_t stop_confirmation_mem3;
-menu_t run_param;
-menu_t pid_param;
+	uint8_t set_option;
+	double temp;
+	uint8_t hours;
+	uint8_t minutes;
+}menu_t;
 
 
-menu_t run_heating = {"RUN HEATING", &run_mem1, &run_param, &set_time_heating, NULL, NULL};
-	menu_t set_time_heating = {"TIME", NULL, NULL, &run_heating, &set_temp_heating, NULL };
-		menu_t set_temp_heating = {"TEMPERATURE", NULL, NULL, &set_time_heating, &start_heating, NULL };
-			menu_t start_heating = {"HEATING ...",NULL, NULL, NULL, &stop_confirmation,	NULL };
-				menu_t stop_confirmation = {"Are you sure?",NULL, NULL,&run_heating , NULL, NULL };
-menu_t run_mem1 = {"RUN MEMORY 1 " ,&run_mem2, &run_heating, &set_time_mem1, NULL, NULL};
-	menu_t set_time_mem1 = {"TIME MEM1", NULL, NULL, &set_temp_mem1, &run_mem1, NULL};
-		menu_t set_temp_mem1 = {"TEMP. MEM1", NULL, NULL, &start_mem1, &set_time_mem1, NULL};
-			menu_t start_mem1 = {"HEATING ...",NULL, NULL, NULL, &stop_confirmation_mem1,	NULL };
-				menu_t stop_confirmation_mem1 = {"Are you sure?",NULL, NULL,&run_mem1 , NULL, NULL };
-menu_t run_mem2 = {"RUN MEMORY 2",&run_mem3, &run_mem1, &set_time_mem2, NULL, NULL};
-	menu_t set_time_mem2 = {"TIME MEM2", NULL, NULL, &set_temp_mem2, &run_mem2, NULL};
-		menu_t set_temp_mem2 = {"TEMP. MEM2", NULL, NULL, &start_mem2, &set_time_mem2, NULL};
-			menu_t start_mem2 = {"HEATING ...",NULL, NULL, NULL, &stop_confirmation_mem2,	NULL };
-				menu_t stop_confirmation_mem2 = {"Are you sure?",NULL, NULL,&run_mem2 , NULL, NULL };
-menu_t run_mem3 = {"RUN MEMORY 3",&run_param, &run_mem2, &set_time_mem3, NULL, NULL};
-	menu_t set_time_mem3 = {"TIME MEM3", NULL, NULL, &set_temp_mem3, &run_mem3, NULL};
-		menu_t set_temp_mem3 = {"000.0", NULL, NULL, &start_mem3, &set_time_mem3, NULL};
-			menu_t start_mem3 = {"HEATING ...",NULL, NULL, NULL, &stop_confirmation_mem3,	NULL };
-				menu_t stop_confirmation_mem3 = {"Are you sure?",NULL, NULL,&run_mem3 , NULL, NULL };
-//menu_t run_servis = {"SERVIS SETTINGS", }
-menu_t run_param = {"DEV PARAMETERS", &run_heating, &run_mem3, &pid_param, NULL, NULL};
-	menu_t pid_param = {"PID PARAMS", NULL,NULL,NULL,&run_param,NULL};
-	//menu_t temp_param = {"TEMP. PARAMS", }
-	//menu_t memmory_param = {"MEMMORY ", }
-	//menu_t pc_conn_param = {"PC CONNECTON", }
-	//menu_t firm_version = {"FIRMWARE VER.", }
-	//menu_t hadware_version = {"HARDWARE VER.", }
-	//menu_t add_sensors = {"EXTRA SENSORS", }
-	//menu_t pcb_temp = {"PCB TEMPERATURE", }
-menu_t *currentPointer = &run_heating;
+ menu_t memory2_settings;
+ menu_t memory2_settings_time;
+ menu_t memory2_settings_temp;
+ menu_t memory2_settings_start;
+
+ menu_t memory3_settings;
+ menu_t memory3_settings_time;
+ menu_t memory3_settings_temp;
+ menu_t memory3_settings_start;
+
+
+ menu_t new_settings;
+ menu_t new_settings_time;
+ menu_t new_settings_temp;
+ menu_t new_settings_start;
+ menu_t memory1_settings;
+ menu_t memory1_settings_time;
+ menu_t memory1_settings_temp;
+ menu_t memory1_settings_start;
+
+
+
+
+
+ menu_t new_settings = {"NEW SET.", &memory1_settings, NULL, &new_settings_time, NULL , NULL,0,0,0,0};
+ menu_t new_settings_time= {"SET TIME", &new_settings_temp, NULL, NULL, &new_settings , NULL,SET_OPTION_TIME,0,12,45};
+ menu_t new_settings_temp= {"SET TEMP.", &new_settings_start, &new_settings_time, NULL, &new_settings , NULL,SET_OPTION_TEMP,56.8,0,0};
+ menu_t new_settings_start= {"START", NULL, &new_settings_temp, NULL, &new_settings , NULL,0,0,0,0};
+
+ menu_t memory1_settings= {"MEMORY 1", &memory2_settings, &new_settings, &memory1_settings_time, NULL , NULL,0,0,0,0};
+ menu_t memory1_settings_time= {"MEM1 TIME", &memory1_settings_temp, NULL, NULL, &memory1_settings , NULL,SET_OPTION_TIME,0,0,0};
+ menu_t memory1_settings_temp= {"MEM1 TEMP", &memory1_settings_start, &memory1_settings_time, NULL, &memory1_settings , NULL,SET_OPTION_TEMP,0,0,0};
+ menu_t memory1_settings_start= {"MEM1 START", NULL, &memory1_settings_temp, NULL, &memory1_settings , NULL,0,0,0,0};
+
+ menu_t memory2_settings= {"MEMORY 2", &memory3_settings, &memory1_settings, &memory2_settings_time, NULL , NULL,0,0,0,0};
+ menu_t memory2_settings_time= {"MEM2 TIME", &memory2_settings_temp, NULL, NULL, &memory2_settings , NULL,SET_OPTION_TIME,0,0,0};
+ menu_t memory2_settings_temp= {"MEM2 TEMP", &memory2_settings_start, &memory2_settings_time, NULL, &memory2_settings , NULL,SET_OPTION_TEMP,0,0,0};
+ menu_t memory2_settings_start= {"MEM2 START", NULL, &memory2_settings_temp, NULL, &memory2_settings , NULL,0,0,0,0};
+
+ menu_t memory3_settings= {"MEMORY 3", NULL, &memory2_settings, &memory3_settings_time, NULL , NULL,0,0,0,0};
+ menu_t memory3_settings_time= {"MEM3 TIME", &memory3_settings_temp, NULL, NULL, &memory3_settings , NULL,SET_OPTION_TIME,0,0,0};
+ menu_t memory3_settings_temp= {"MEM3 TEMP", &memory3_settings_start, &memory3_settings_time, NULL, &memory3_settings , NULL,SET_OPTION_TEMP,0,0,0};
+ menu_t memory3_settings_start= {"MEM3 START", NULL, &memory3_settings_temp, NULL, &memory3_settings , NULL,0,0,0,0};
+
+uint8_t lcd_row_pos_level_1,lcd_row_pos_level_2;
+
+void ui_list_init(void){
+//  read data from eeprom and put into scructs
+}
+
+
+
+menu_t *currentPointer = &new_settings;
 uint8_t menu_index = 0;
 uint8_t lcd_row_pos = 0;
 
+char time_string[8];
+char temp_string[8];
 
+//
+//void ui_list_init()
+//{
+//
+//}
+//
+void convert_time_to_str(uint8_t time_h, uint8_t time_m)
+{
+	char zero_str = 48;
+	time_string[0] = '[';
+	time_string[1] = time_h/10 + zero_str;
+	time_string[2] = time_h%10 + zero_str;
+	time_string[3] = ':';
+	time_string[4] = time_m/10 + zero_str;
+	time_string[5] = time_m%10 + zero_str;
+	time_string[6] = ']';
+	time_string[7] = '\0';
+}
+void convert_temp_to_str(double temp_double)
+{
+	uint16_t temp_int = (uint16_t)(temp_double*10);
+	char zero_str = 48;
+	temp_string[0] = '[';
+	temp_string[1] = temp_int/100 + zero_str;
+	temp_string[2] = (temp_int%100)/10 +zero_str;
+	temp_string[3] = '.';
+	temp_string[4] = (temp_int%100)%10+zero_str;
+	temp_string[5] = 0xdf;
+	temp_string[6] = ']';
+	temp_string[7] = '\0';
+}
+
+const char * ui_test_string(void)
+{
+	char *p = "Test";
+	return p;
+}
 
 void menu_refresh(void) {
 
 	menu_t *temp;
 	uint8_t i;
+	char string_table[7];
 	if (currentPointer->parent) temp = (currentPointer->parent)->child;
-	else temp = &run_heating;
+	else temp = &new_settings;
 	for (i = 0; i != menu_index - lcd_row_pos; i++) {
 		temp = temp->next;
 	}
@@ -114,12 +152,26 @@ void menu_refresh(void) {
 	lcd_buf_clear();
 	for (i = 0; i < LCD_ROWS; i++) {
 
-		lcd_buf_go_to(i,0);
+		lcd_buf_go_to(0,i);
 		if (temp == currentPointer) lcd_char(62);
 		else lcd_char(' ');
 
-		lcd_buf_go_to(i, 2);
+		lcd_buf_go_to(2, i);
 		lcd_buf_write_text(temp->name);
+
+		if(temp->set_option == SET_OPTION_TIME)
+		{
+			lcd_buf_go_to(12, i);
+			convert_time_to_str(temp->hours, temp->minutes);
+			lcd_buf_write_text(time_string);
+			//lcd_buf_write_text(ui_convert_inttime_to_str(temp->hours, temp->minutes));
+		}
+		else if(temp->set_option == SET_OPTION_TEMP)
+		{
+			lcd_buf_go_to(12, i);
+			convert_temp_to_str(temp->temp);
+			lcd_buf_write_text(temp_string);
+		}
 
 		temp = temp->next;
 		if (!temp) break;
@@ -134,7 +186,7 @@ uint8_t menu_get_index(menu_t *q) {
 	uint8_t i = 0;
 
 	if (q->parent) temp = (q->parent)->child;
-	else temp = &run_heating;
+	else temp = &new_settings;
 
 	while (temp != q) {
 		temp = temp->next;
@@ -154,36 +206,105 @@ void ui_menu_next(void)
 	}
 	else
 	{
-		menu_index = 0;
-		lcd_row_pos = 0;
+		//menu_index = 0;
+		//lcd_row_pos = 0;
 
-		if (currentPointer->parent) currentPointer = (currentPointer->parent)->child;
-		else currentPointer = &run_heating;
+		//if (currentPointer->parent) currentPointer = (currentPointer->parent)->child;
+		//else currentPointer = &new_settings;
 	}
 	menu_refresh();
 }
 
 void ui_menu_prev(void) {
 
-	currentPointer = currentPointer->prev;
 
-	if (menu_index)
+	if(currentPointer->prev)
 	{
-		menu_index--;
-		if (lcd_row_pos > 0) lcd_row_pos--;
-	}
-	else
-	{
-		menu_index = menu_get_index(currentPointer);
+		currentPointer = currentPointer->prev;
+		if (menu_index)
+		{
+			menu_index--;
+			if (lcd_row_pos > 0) lcd_row_pos--;
+		}
+		else
+		{
+			menu_index = menu_get_index(currentPointer);
 
-		if (menu_index >= LCD_ROWS - 1) lcd_row_pos = LCD_ROWS - 1;
-		else lcd_row_pos = menu_index;
+			if (menu_index >= LCD_ROWS - 1) lcd_row_pos = LCD_ROWS - 1;
+			else lcd_row_pos = menu_index;
+		}
 	}
-
 	menu_refresh();
 }
 
+uint8_t menu_get_level(menu_t *q) {
 
+	menu_t *temp = q;
+	uint8_t i = 0;
+
+	if (!q->parent) return 0;
+
+	while (temp->parent != NULL) {
+		temp = temp->parent;
+		i++;
+	}
+
+	return i;
+}
+
+
+void ui_menu_enter(void) {
+
+	if (currentPointer->menu_function) currentPointer->menu_function();
+
+	if (currentPointer->child)
+	{
+
+		switch (menu_get_level(currentPointer)) {
+			case 0:
+				lcd_row_pos_level_1 = lcd_row_pos;
+				break;
+
+			case 1:
+				lcd_row_pos_level_2 = lcd_row_pos;
+				break;
+		}
+
+		// switch...case can be replaced by:
+		// lcd_row_pos_level[ menu_get_level(currentPointer) ] = lcd_row_pos;
+
+		menu_index = 0;
+		lcd_row_pos = 0;
+
+		currentPointer = currentPointer->child;
+
+		menu_refresh();
+	}
+}
+
+
+
+void ui_menu_back(void) {
+
+	if (currentPointer->parent) {
+
+		switch (menu_get_level(currentPointer)) {
+			case 1:
+				lcd_row_pos = lcd_row_pos_level_1;
+				break;
+
+			case 2:
+				lcd_row_pos = lcd_row_pos_level_2;
+				break;
+			}
+
+		currentPointer = currentPointer->parent;
+		menu_index = menu_get_index(currentPointer);
+
+		menu_refresh();
+
+	}
+}
 /* ui_handler_flag its busy flag its prevent
  * entering to ui_handler() few times with this same ms_counter value */
 
@@ -261,7 +382,7 @@ void ui_change_heating_status(uint8_t status)
  */
 
 
-uint8_t ui_initalize(void)
+void ui_initalize(void)
 {
 	SysTick_Config(72000);
 }

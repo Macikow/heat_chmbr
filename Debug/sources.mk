@@ -20,6 +20,7 @@ SUBDIRS := \
 Drivers/STM32F1xx_HAL_Driver/Src \
 Src/DELEYS \
 Src/DS18B20 \
+Src/EEPROM \
 Src/HD44780 \
 Src/NTC \
 Src/PWM_CTRL \

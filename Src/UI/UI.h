@@ -15,6 +15,8 @@
 volatile uint8_t ui_handler_flag;
 
 
+
+
 void UI_led_red_on();
 void UI_led_red_off();
 void UI_green_led_on();
@@ -34,6 +36,10 @@ void ui_handler(void);
 void ui_menu_refresh(void);
 
 void ui_menu_next(void);
+void ui_menu_prev(void);
+void ui_menu_enter(void);
+void ui_menu_back(void);
+
 
 
 

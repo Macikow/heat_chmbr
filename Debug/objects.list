@@ -18,6 +18,7 @@
 "Src/DELEYS/delay.o"
 "Src/DS18B20/crc8.o"
 "Src/DS18B20/ds18b20.o"
+"Src/EEPROM/EEPROM.o"
 "Src/HD44780/HD44780.o"
 "Src/NTC/ntc.o"
 "Src/PWM_CTRL/PWM_CTRL.o"

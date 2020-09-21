@@ -39,6 +39,7 @@ extern "C" {
 #include "ntc.h"
 #include "time_counter.h"
 #include "PWM_CTRL.h"
+#include <stdlib.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

@@ -6,11 +6,11 @@
  */
 #include "main.h"
 
-#define LCD_COLS 16
+#define LCD_COLS 20
 #define LCD_ROWS 2
 
-char lcd_buf[2][16];
-char lcd_buf_old[2][16];
+char lcd_buf[2][20];
+char lcd_buf_old[2][20];
 
 uint8_t write_buf_x_pos = 0;
 uint8_t write_buf_y_pos = 0;
@@ -169,21 +169,23 @@ void LCD_Initalize(void)
 }
 
 
-void lcd_buf_go_to(uint8_t buf_y, uint8_t buf_x )
+void lcd_buf_go_to(uint8_t buf_x, uint8_t buf_y )
 {
 	write_buf_x_pos = buf_x;
 	write_buf_y_pos = buf_y;
 }
+
 
 void lcd_char(char c)
 {
 	lcd_buf[write_buf_y_pos][write_buf_x_pos] = c;
 }
 
+
 void lcd_buf_clear(void)
 {
-	for(uint8_t iy = 0 ; iy <2 ; iy++ ){
-		for(uint8_t ix = 0; ix < 16; ix ++)
+	for(uint8_t iy = 0 ; iy <LCD_ROWS ; iy++ ){
+		for(uint8_t ix = 0; ix < LCD_COLS; ix ++)
 		{
 			lcd_buf[iy][ix] = ' ';
 		}

@@ -207,7 +207,7 @@ void ntc_analog_sensors_calc(uint8_t no_sensor)
 
 uint8_t ntc_check_analog_sensors_status(void)
 {
-	uint8_t ntc_counter;
+	uint8_t ntc_counter =0;
 	for(uint8_t analog_sens_count = 0; analog_sens_count < (ADC_CHANNELS - 1) ; analog_sens_count++ )
 	{
 		if(ntc_analog_values.NTC_temperature[analog_sens_count] != 0) ntc_counter++;
@@ -220,6 +220,7 @@ double ntc_get_analog_sensors_value(uint8_t no_of_sensor)
 	if(no_of_sensor == 0)		return ntc_analog_values.NTC_temperature[0];
 	else if(no_of_sensor == 1)	return ntc_analog_values.NTC_temperature[1];
 	else if(no_of_sensor == 2)	return ntc_analog_values.NTC_temperature[2];
+	else return 0;
 }
 
 void ntc_start_continous_converting(void)
@@ -239,11 +240,11 @@ double ntc_convert_kelvin_to_celsius(double kelvin_temperature)
 
 double ntc_convert_ADC_to_double(void)
 {
-	uint16_t ADC_Data;
+	uint16_t ADC_Data =0;
 	const double V_DD = 3.32;
 	const uint16_t R_divide = 33000;
 	const uint16_t BETA = 3435;
-	double U_ADC = 0, R_NTC, T_0 = 298.15;
+	double U_ADC, R_NTC, T_0 = 298.15;
 	double T = 0;
 
 

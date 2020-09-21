@@ -110,6 +110,7 @@ int main(void)
   LCD_Initalize();
   ds18b20_initalize();
   ntc_init();
+  //ui_list_init();
   //pwmctrl_enable_timer_irq();
   /* USER CODE END 2 */
   lcd_buf_clear();

@@ -298,11 +298,11 @@ void EXTI15_10_IRQHandler(void)
   /* USER CODE BEGIN EXTI15_10_IRQn 0 */
 	if((EXTI->PR & BUTTON_EXIT_Pin) != 0x00u)
 	{
-
+		ui_menu_back();
 	}
 	else if((EXTI->PR & BUTTON_OK_Pin) != 0x00u)
 	{
-
+		ui_menu_enter();
 	}
 	else if((EXTI->PR & BUTTON_DOWN_Pin) != 0x00u)
 	{
