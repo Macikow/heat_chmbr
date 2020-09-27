@@ -11,7 +11,10 @@
 
 #define UI_HANDLER_FLAG_FREE 0
 #define UI_HANDLER_FLAG_BUSY 1
-
+#define UI_BUTTON_UP	0
+#define UI_BUTTON_DOWN	1
+#define UI_BUTTON_OK	2
+#define UI_BUTTON_BACK	3
 volatile uint8_t ui_handler_flag;
 
 
@@ -39,6 +42,8 @@ void ui_menu_next(void);
 void ui_menu_prev(void);
 void ui_menu_enter(void);
 void ui_menu_back(void);
+
+void ui_button_handler(uint8_t button);
 
 
 

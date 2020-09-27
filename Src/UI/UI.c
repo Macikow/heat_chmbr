@@ -14,6 +14,14 @@
 #define LCD_ROWS 2
 #define SET_OPTION_TIME 1
 #define SET_OPTION_TEMP 2
+#define BUTTON_HANDLER_FUNC_MENU 0
+#define BUTTON_HANDLER_FUNC_SET_TIME 1
+#define BUTTON_HANDLER_FUNC_SET_TEMP 2
+
+
+uint8_t button_hold_on_counter =0;
+
+
 
 struct statusStruct
 {
@@ -29,10 +37,10 @@ struct statusStruct
 
 typedef struct menu_struct {
 	const char * name;
-	const struct menu_struct * next;
-	const struct menu_struct * prev;
-	const struct menu_struct * child;
-	const struct menu_struct * parent;
+	volatile struct menu_struct * next;
+	volatile struct menu_struct * prev;
+	volatile struct menu_struct * child;
+	volatile struct menu_struct * parent;
 	void (*menu_function)(void);
 	uint8_t set_option;
 	double temp;
@@ -41,71 +49,230 @@ typedef struct menu_struct {
 }menu_t;
 
 
- menu_t memory2_settings;
- menu_t memory2_settings_time;
- menu_t memory2_settings_temp;
- menu_t memory2_settings_start;
+volatile menu_t memory2_settings;
+volatile menu_t memory2_settings_time;
+volatile menu_t memory2_settings_temp;
+volatile menu_t memory2_settings_start;
 
- menu_t memory3_settings;
- menu_t memory3_settings_time;
- menu_t memory3_settings_temp;
- menu_t memory3_settings_start;
-
-
- menu_t new_settings;
- menu_t new_settings_time;
- menu_t new_settings_temp;
- menu_t new_settings_start;
- menu_t memory1_settings;
- menu_t memory1_settings_time;
- menu_t memory1_settings_temp;
- menu_t memory1_settings_start;
+volatile menu_t memory3_settings;
+volatile menu_t memory3_settings_time;
+volatile menu_t memory3_settings_temp;
+volatile menu_t memory3_settings_start;
 
 
+volatile menu_t new_settings;
+volatile menu_t new_settings_time;
+volatile menu_t new_settings_temp;
+volatile menu_t new_settings_start;
+
+volatile menu_t memory1_settings;
+volatile menu_t memory1_settings_time;
+volatile menu_t memory1_settings_temp;
+volatile menu_t memory1_settings_start;
+
+volatile menu_t dev_propertise;
 
 
+void ui_set_time_callback(void);
+void ui_set_temp_callback(void);
+void menu_refresh(void);
 
- menu_t new_settings = {"NEW SET.", &memory1_settings, NULL, &new_settings_time, NULL , NULL,0,0,0,0};
- menu_t new_settings_time= {"SET TIME", &new_settings_temp, NULL, NULL, &new_settings , NULL,SET_OPTION_TIME,0,12,45};
- menu_t new_settings_temp= {"SET TEMP.", &new_settings_start, &new_settings_time, NULL, &new_settings , NULL,SET_OPTION_TEMP,56.8,0,0};
- menu_t new_settings_start= {"START", NULL, &new_settings_temp, NULL, &new_settings , NULL,0,0,0,0};
 
- menu_t memory1_settings= {"MEMORY 1", &memory2_settings, &new_settings, &memory1_settings_time, NULL , NULL,0,0,0,0};
- menu_t memory1_settings_time= {"MEM1 TIME", &memory1_settings_temp, NULL, NULL, &memory1_settings , NULL,SET_OPTION_TIME,0,0,0};
- menu_t memory1_settings_temp= {"MEM1 TEMP", &memory1_settings_start, &memory1_settings_time, NULL, &memory1_settings , NULL,SET_OPTION_TEMP,0,0,0};
- menu_t memory1_settings_start= {"MEM1 START", NULL, &memory1_settings_temp, NULL, &memory1_settings , NULL,0,0,0,0};
+volatile menu_t new_settings = {"NEW SET.", &memory1_settings, NULL, &new_settings_time, NULL , NULL,0,0,0,0};
+volatile menu_t new_settings_time= {"SET TIME", &new_settings_temp, NULL, NULL, &new_settings , ui_set_time_callback,SET_OPTION_TIME,0,12,45};
+volatile menu_t new_settings_temp= {"SET TEMP.", &new_settings_start, &new_settings_time, NULL, &new_settings , ui_set_temp_callback,SET_OPTION_TEMP,56.8,0,0};
+volatile menu_t new_settings_start= {"START", NULL, &new_settings_temp, NULL, &new_settings , NULL,0,0,0,0};
 
- menu_t memory2_settings= {"MEMORY 2", &memory3_settings, &memory1_settings, &memory2_settings_time, NULL , NULL,0,0,0,0};
- menu_t memory2_settings_time= {"MEM2 TIME", &memory2_settings_temp, NULL, NULL, &memory2_settings , NULL,SET_OPTION_TIME,0,0,0};
- menu_t memory2_settings_temp= {"MEM2 TEMP", &memory2_settings_start, &memory2_settings_time, NULL, &memory2_settings , NULL,SET_OPTION_TEMP,0,0,0};
- menu_t memory2_settings_start= {"MEM2 START", NULL, &memory2_settings_temp, NULL, &memory2_settings , NULL,0,0,0,0};
+volatile menu_t memory1_settings= {"MEMORY 1", &memory2_settings, &new_settings, &memory1_settings_time, NULL , NULL,0,0,0,0};
+volatile menu_t memory1_settings_time= {"MEM1 TIME", &memory1_settings_temp, NULL, NULL, &memory1_settings , ui_set_time_callback,SET_OPTION_TIME,0,0,0};
+volatile menu_t memory1_settings_temp= {"MEM1 TEMP", &memory1_settings_start, &memory1_settings_time, NULL, &memory1_settings , ui_set_temp_callback,SET_OPTION_TEMP,0,0,0};
+volatile menu_t memory1_settings_start= {"MEM1 START", NULL, &memory1_settings_temp, NULL, &memory1_settings , NULL,0,0,0,0};
 
- menu_t memory3_settings= {"MEMORY 3", NULL, &memory2_settings, &memory3_settings_time, NULL , NULL,0,0,0,0};
- menu_t memory3_settings_time= {"MEM3 TIME", &memory3_settings_temp, NULL, NULL, &memory3_settings , NULL,SET_OPTION_TIME,0,0,0};
- menu_t memory3_settings_temp= {"MEM3 TEMP", &memory3_settings_start, &memory3_settings_time, NULL, &memory3_settings , NULL,SET_OPTION_TEMP,0,0,0};
- menu_t memory3_settings_start= {"MEM3 START", NULL, &memory3_settings_temp, NULL, &memory3_settings , NULL,0,0,0,0};
+volatile menu_t memory2_settings= {"MEMORY 2", &memory3_settings, &memory1_settings, &memory2_settings_time, NULL , NULL,0,0,0,0};
+volatile menu_t memory2_settings_time= {"MEM2 TIME", &memory2_settings_temp, NULL, NULL, &memory2_settings , ui_set_time_callback,SET_OPTION_TIME,0,0,0};
+volatile menu_t memory2_settings_temp= {"MEM2 TEMP", &memory2_settings_start, &memory2_settings_time, NULL, &memory2_settings , ui_set_temp_callback,SET_OPTION_TEMP,0,0,0};
+volatile menu_t memory2_settings_start= {"MEM2 START", NULL, &memory2_settings_temp, NULL, &memory2_settings , NULL,0,0,0,0};
+
+ volatile menu_t memory3_settings= {"MEMORY 3", NULL, &memory2_settings, &memory3_settings_time, NULL , NULL,0,0,0,0};
+ volatile menu_t memory3_settings_time= {"MEM3 TIME", &memory3_settings_temp, NULL, NULL, &memory3_settings , ui_set_time_callback,SET_OPTION_TIME,0,0,0};
+ volatile menu_t memory3_settings_temp= {"MEM3 TEMP", &memory3_settings_start, &memory3_settings_time, NULL, &memory3_settings , ui_set_temp_callback,SET_OPTION_TEMP,0,0,0};
+ volatile menu_t memory3_settings_start= {"MEM3 START", NULL, &memory3_settings_temp, NULL, &memory3_settings , NULL,0,0,0,0};
 
 uint8_t lcd_row_pos_level_1,lcd_row_pos_level_2;
-
-void ui_list_init(void){
-//  read data from eeprom and put into scructs
-}
-
 
 
 menu_t *currentPointer = &new_settings;
 uint8_t menu_index = 0;
 uint8_t lcd_row_pos = 0;
-
+uint8_t button_handler_func = BUTTON_HANDLER_FUNC_MENU;
 char time_string[8];
 char temp_string[8];
 
-//
-//void ui_list_init()
-//{
-//
-//}
-//
+
+void ui_set_time_callback(){
+	button_handler_func = BUTTON_HANDLER_FUNC_SET_TIME;
+}
+
+void ui_set_temp_callback(){
+	button_handler_func = BUTTON_HANDLER_FUNC_SET_TEMP;
+}
+
+void ui_time_plus()
+{
+	currentPointer->minutes++;
+	if(currentPointer->minutes == 60)
+	{
+		currentPointer->minutes = 0;
+		currentPointer->hours++;
+		if(currentPointer->hours == 100)
+		{
+			currentPointer->hours = 0;
+		}
+	}
+	menu_refresh();
+}
+void ui_time_minus()
+{
+	currentPointer->minutes--;
+	if(currentPointer->minutes == 0xff)
+	{
+		currentPointer->minutes = 59;
+		currentPointer->hours--;
+		if(currentPointer->hours == 0xff)
+		{
+			currentPointer->hours = 99;
+		}
+	}
+	menu_refresh();
+}
+void ui_time_save_and_exit()
+{
+	button_handler_func = BUTTON_HANDLER_FUNC_MENU;
+}
+void ui_time_exit_witout_save()
+{
+	button_handler_func = BUTTON_HANDLER_FUNC_MENU;
+}
+
+void ui_temp_plus()
+{
+	currentPointer->temp = currentPointer->temp + 0.1;
+	if(currentPointer->temp > 70)
+	{
+		currentPointer->temp = 70.0;
+	}
+	menu_refresh();
+}
+void ui_temp_minus() // TODO sprawdzić temperature otoczenie i do niej sie odnieść jako do najmniejszej możliwie ustawianej temperatury
+{
+	currentPointer->temp = currentPointer->temp - 0.1;
+	if(currentPointer->temp < 0 )
+	{
+		currentPointer->temp = 0;
+	}
+	menu_refresh();
+}
+void ui_temp_save_and_exit()
+{
+	button_handler_func = BUTTON_HANDLER_FUNC_MENU;
+}
+void ui_temp_exit_witout_save()
+{
+	button_handler_func = BUTTON_HANDLER_FUNC_MENU;
+}
+
+
+
+void ui_button_handler(uint8_t button)
+{
+	if(button_handler_func == BUTTON_HANDLER_FUNC_MENU)
+	{
+		if(button == UI_BUTTON_UP)
+		{
+			ui_menu_prev();
+		}
+		else if(button == UI_BUTTON_DOWN)
+		{
+			ui_menu_next();
+		}
+		else if(button == UI_BUTTON_OK)
+		{
+			ui_menu_enter();
+		}
+		else if(button == UI_BUTTON_BACK)
+		{
+			ui_menu_back();
+		}
+	}
+	else if(button_handler_func == BUTTON_HANDLER_FUNC_SET_TIME)
+	{
+		if(button == UI_BUTTON_UP)
+		{
+			ui_time_plus();
+		}
+		else if(button == UI_BUTTON_DOWN)
+		{
+			ui_time_minus();
+		}
+		else if(button == UI_BUTTON_OK)
+		{
+			ui_time_save_and_exit();
+		}
+		else if(button == UI_BUTTON_BACK)
+		{
+			ui_time_exit_witout_save();
+		}
+	}
+	else if(button_handler_func == BUTTON_HANDLER_FUNC_SET_TEMP)
+	{
+		if(button == UI_BUTTON_UP)
+		{
+			ui_temp_plus();
+		}
+		else if(button == UI_BUTTON_DOWN)
+		{
+			ui_temp_minus();
+		}
+		else if(button == UI_BUTTON_OK)
+		{
+			ui_temp_save_and_exit();
+		}
+		else if(button == UI_BUTTON_BACK)
+		{
+			ui_temp_exit_witout_save();
+		}
+	}
+
+}
+
+
+
+void ui_change_button_func(uint8_t func)
+{
+	/*if(func == UI_FUNC_MENU)
+	{
+
+	}
+	else if(func == UI_FUNC_SET_TEMP)
+	{
+
+	}
+	else if(func == UI_FUNC_SET_TIME)
+	{
+
+	}
+	else
+	{
+
+	}*/
+}
+
+
+
+void ui_list_init(void){
+//  read data from eeprom and put into scructs
+}
+
 void convert_time_to_str(uint8_t time_h, uint8_t time_m)
 {
 	char zero_str = 48;
@@ -309,10 +476,61 @@ void ui_menu_back(void) {
  * entering to ui_handler() few times with this same ms_counter value */
 
 
+void iu_button_hold_handler()
+{
+	static uint8_t button_hold_on_timer_divider;
+
+
+	if((GPIOB->IDR & GPIO_PIN_12) == 0)
+	{
+		if(ms_counter % 999 == 0)
+		{
+			button_hold_on_counter++;
+		}
+	}
+	else if((GPIOC->IDR & GPIO_PIN_13) == 0)
+	{
+		if(ms_counter % 999 == 0)
+		{
+			button_hold_on_counter++;
+		}
+	}
+	else
+	{
+		button_hold_on_counter = 0;
+		return ;
+	}
+	if(button_hold_on_counter < 2) return;
+	if(button_hold_on_counter > 2)
+	{
+		button_hold_on_timer_divider = 2;
+		if(button_hold_on_counter  > 4) button_hold_on_timer_divider = 3;
+		if(button_hold_on_counter  > 6) button_hold_on_timer_divider = 8;
+		if(button_hold_on_counter  > 10) button_hold_on_timer_divider = 14;
+		if(ms_counter %(1000/button_hold_on_timer_divider) == 0)
+			{
+				if((GPIOB->IDR & GPIO_PIN_12) == 0)
+				{
+					ui_button_handler(UI_BUTTON_UP);
+				}
+				else if((GPIOC->IDR & GPIO_PIN_13) == 0)
+				{
+					ui_button_handler(UI_BUTTON_DOWN);
+				}
+			}
+	}
+
+
+
+}
+
 
 void ui_handler()
 {
+
 	if(ui_handler_flag == UI_HANDLER_FLAG_BUSY) return;
+
+	iu_button_hold_handler();
 
 	//red led control
 
