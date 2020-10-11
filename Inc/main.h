@@ -32,6 +32,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "EEPROM.h"
 #include "HD44780.h"
 #include "ds18b20.h"
 #include "delay.h"

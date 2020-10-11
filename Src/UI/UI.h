@@ -18,6 +18,46 @@
 volatile uint8_t ui_handler_flag;
 
 
+/*
+menu_t new_settings;
+
+*/
+
+typedef struct menu_struct {
+	char * name;
+	struct menu_struct * next;
+	struct menu_struct * prev;
+	struct menu_struct * child;
+	struct menu_struct * parent;
+	void (*menu_function)(void);
+	uint8_t set_option;
+	double temp;
+	uint8_t hours;
+	uint8_t minutes;
+}menu_t;
+
+menu_t ns_set;
+menu_t ns_time;
+menu_t ns_temp;
+menu_t ns_start;
+
+menu_t mem1_set;
+menu_t mem1_time; //= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
+menu_t mem1_temp; // = {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
+menu_t mem1_start; //= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
+
+menu_t mem2_set;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
+menu_t mem2_time;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
+menu_t mem2_temp;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
+menu_t mem2_start;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
+
+menu_t mem3_set;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
+menu_t mem3_time;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
+menu_t mem3_temp;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
+menu_t mem3_start;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
+
+
+
 
 
 void UI_led_red_on();
@@ -44,6 +84,7 @@ void ui_menu_enter(void);
 void ui_menu_back(void);
 
 void ui_button_handler(uint8_t button);
+void ui_populate_with_rom_data(void);
 
 
 

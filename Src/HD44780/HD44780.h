@@ -11,7 +11,8 @@
 
 #include "main.h"
 
-
+char lcd_buf[2][20];
+char lcd_buf_old[2][20];
 
 #define HD44780_CLEAR					0x01
 
@@ -72,6 +73,8 @@ void lcd_buf_write_text(char * text);
 void lcd_handler(void);
 
 void lcd_char(char c);
+
+void lcd_circle_bufer_refresh(void);
 
 
 

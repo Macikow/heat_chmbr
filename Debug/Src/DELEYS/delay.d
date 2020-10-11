@@ -26,6 +26,7 @@ Src/DELEYS/delay.o: ../Src/DELEYS/delay.c ../Src/DELEYS/delay.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
+ C:/Users/kowma/stm_code/HEAT_CHMBR/Src/EEPROM/EEPROM.h \
  C:/Users/kowma/stm_code/HEAT_CHMBR/Src/HD44780/HD44780.h \
  C:/Users/kowma/stm_code/HEAT_CHMBR/Src/DS18B20/ds18b20.h \
  C:/Users/kowma/stm_code/HEAT_CHMBR/Src/DELEYS/delay.h \
@@ -91,6 +92,8 @@ Src/DELEYS/delay.o: ../Src/DELEYS/delay.c ../Src/DELEYS/delay.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h:
 
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
+
+C:/Users/kowma/stm_code/HEAT_CHMBR/Src/EEPROM/EEPROM.h:
 
 C:/Users/kowma/stm_code/HEAT_CHMBR/Src/HD44780/HD44780.h:
 

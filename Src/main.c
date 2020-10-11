@@ -62,15 +62,12 @@ static void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 
-void increment_ms_counter(void)
-{
 
-}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+uint16_t VirtAddVarTab[] = {23,1234,123};
 /* USER CODE END 0 */
 
 /**
@@ -80,7 +77,6 @@ void increment_ms_counter(void)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -106,23 +102,29 @@ int main(void)
   MX_TIM1_Init();
   simple_delay_ms(500);
   MX_USART3_UART_Init();
-  /* USER CODE BEGIN 2 */
   LCD_Initalize();
+  HAL_FLASH_Unlock();
+  if( EE_Init() != HAL_OK) Error_Handler();
+ // HAL_FLASH_Lock();
+  /* USER CODE BEGIN 2 */
+
   ds18b20_initalize();
   ntc_init();
-  //ui_list_init();
+  rom_value_init();
+  ui_populate_with_rom_data();
   //pwmctrl_enable_timer_irq();
+
+
   /* USER CODE END 2 */
-  lcd_buf_clear();
-  lcd_buf_go_to(0, 5);
-  lcd_buf_write_text("dupa");
+
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
-	  lcd_handler();
+	  //lcd_handler();
+	  lcd_circle_bufer_refresh();
 	  ui_handler();
 	  ntc_handler(500, 0);
     /* USER CODE BEGIN 3 */

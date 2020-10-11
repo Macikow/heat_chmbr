@@ -9,8 +9,7 @@
 #define LCD_COLS 20
 #define LCD_ROWS 2
 
-char lcd_buf[2][20];
-char lcd_buf_old[2][20];
+
 
 uint8_t write_buf_x_pos = 0;
 uint8_t write_buf_y_pos = 0;
@@ -34,7 +33,7 @@ void _LCD_Write(uint8_t data){
 	LCD_E_GPIO_Port->ODR |= LCD_E_Pin;
 	LCD_D0_GPIO_Port->ODR &= 0xff00;
 	LCD_D0_GPIO_Port->ODR |= data;
-	simple_delay_us(4);
+	simple_delay_us(8);
 	LCD_E_GPIO_Port->ODR &= ~LCD_E_Pin;
 }
 //-------------------------------------------------------------------------------------------------
@@ -50,9 +49,9 @@ uint8_t _LCD_Read(void){
 
 	LCD_RW_GPIO_Port->ODR |= LCD_RW_Pin;
 	LCD_E_GPIO_Port->ODR |= LCD_E_Pin;
-	simple_delay_us(10);
+	simple_delay_us(8);
 	tmp = (uint8_t) (LCD_D0_GPIO_Port->IDR & 0x00ff);
-	simple_delay_us(2);
+	simple_delay_us(8);
 	LCD_E_GPIO_Port->ODR &= ~LCD_E_Pin;
 	return tmp;
 }
@@ -65,7 +64,7 @@ uint8_t _LCD_Read(void){
 void LCD_WriteCommand(uint8_t command){
 	LCD_RS_GPIO_Port->ODR &= ~LCD_RS_Pin;
 	_LCD_Write(command);
-	simple_delay_us(2);
+	simple_delay_us(8);
 	while(LCD_ReadStatus() & 0x80);
 }
 
@@ -76,7 +75,7 @@ void LCD_WriteCommand(uint8_t command){
 //-------------------------------------------------------------------------------------------------
 uint8_t LCD_ReadStatus(void){
 	LCD_RS_GPIO_Port->ODR &= ~LCD_RS_Pin;
-	simple_delay_us(2);
+	simple_delay_us(8);
 	return _LCD_Read();
 }
 //-------------------------------------------------------------------------------------------------
@@ -87,7 +86,7 @@ uint8_t LCD_ReadStatus(void){
 void LCD_WriteData(uint8_t data){
 	LCD_RS_GPIO_Port->ODR |= LCD_RS_Pin;
 	_LCD_Write(data);
-	//simple_delay_ms(10);
+	simple_delay_us(15);
 	//while(LCD_ReadStatus() & 0x80);
 }
 //-------------------------------------------------------------------------------------------------
@@ -122,7 +121,7 @@ void LCD_GoTo(uint8_t x, uint8_t y){
 //-------------------------------------------------------------------------------------------------
 void LCD_Clear(void){
 	LCD_WriteCommand(HD44780_CLEAR);
-	simple_delay_ms(6);
+	simple_delay_us(10);
 }
 //-------------------------------------------------------------------------------------------------
 //
@@ -131,7 +130,7 @@ void LCD_Clear(void){
 //-------------------------------------------------------------------------------------------------
 void LCD_Home(void){
 	LCD_WriteCommand(HD44780_HOME);
-	simple_delay_ms(6);
+	simple_delay_us(10);
 }
 //-------------------------------------------------------------------------------------------------
 //
@@ -237,6 +236,20 @@ void lcd_handler()
 			locate_flag = 0;
 		}
 		x++;
+	}
+}
+void lcd_circle_bufer_refresh()
+{
+	static uint8_t xc = 0, yc = 0;
+	LCD_GoTo(xc,yc);
+	LCD_WriteData(lcd_buf[yc][xc]);
+	if(++xc == 20)
+	{
+		xc = 0;
+		if(++yc == 2)
+		{
+			 yc = 0;
+		}
 	}
 }
 

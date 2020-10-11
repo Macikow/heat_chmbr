@@ -1,4 +1,4 @@
-Src/DS18B20/crc8.o: ../Src/DS18B20/crc8.c ../Inc/main.h \
+Src/EEPROM/rom.o: ../Src/EEPROM/rom.c ../Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
@@ -33,8 +33,7 @@ Src/DS18B20/crc8.o: ../Src/DS18B20/crc8.c ../Inc/main.h \
  C:/Users/kowma/stm_code/HEAT_CHMBR/Src/UI/UI.h \
  C:/Users/kowma/stm_code/HEAT_CHMBR/Src/NTC/ntc.h \
  C:/Users/kowma/stm_code/HEAT_CHMBR/Src/TIME_COUNTER/time_counter.h \
- C:/Users/kowma/stm_code/HEAT_CHMBR/Src/PWM_CTRL/PWM_CTRL.h \
- ../Src/DS18B20/ds18b20.h
+ C:/Users/kowma/stm_code/HEAT_CHMBR/Src/PWM_CTRL/PWM_CTRL.h
 
 ../Inc/main.h:
 
@@ -107,5 +106,3 @@ C:/Users/kowma/stm_code/HEAT_CHMBR/Src/NTC/ntc.h:
 C:/Users/kowma/stm_code/HEAT_CHMBR/Src/TIME_COUNTER/time_counter.h:
 
 C:/Users/kowma/stm_code/HEAT_CHMBR/Src/PWM_CTRL/PWM_CTRL.h:
-
-../Src/DS18B20/ds18b20.h:
