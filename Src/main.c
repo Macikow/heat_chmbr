@@ -46,7 +46,7 @@
 SPI_HandleTypeDef hspi2;
 
 
-UART_HandleTypeDef huart3;
+
 
 /* USER CODE BEGIN PV */
 
@@ -77,6 +77,7 @@ uint16_t VirtAddVarTab[] = {23,1234,123};
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -112,6 +113,7 @@ int main(void)
   ntc_init();
   rom_value_init();
   ui_populate_with_rom_data();
+  __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1);
   //pwmctrl_enable_timer_irq();
 
 
@@ -127,6 +129,9 @@ int main(void)
 	  lcd_circle_bufer_refresh();
 	  ui_handler();
 	  ntc_handler(500, 0);
+	  servis_uart_send_ntc(720, 0);
+
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -394,7 +399,7 @@ static void MX_USART3_UART_Init(void)
 
   /* USER CODE END USART3_Init 1 */
   huart3.Instance = USART3;
-  huart3.Init.BaudRate = 115200;
+  huart3.Init.BaudRate = 9600;
   huart3.Init.WordLength = UART_WORDLENGTH_8B;
   huart3.Init.StopBits = UART_STOPBITS_1;
   huart3.Init.Parity = UART_PARITY_NONE;

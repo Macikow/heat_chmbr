@@ -23,7 +23,9 @@ Src/DS18B20 \
 Src/EEPROM \
 Src/HD44780 \
 Src/NTC \
+Src/PID \
 Src/PWM_CTRL \
+Src/SERVIS \
 Src/TIME_COUNTER \
 Src/UI \
 Src \

@@ -12,5 +12,5 @@ OBJS += \
 
 # Each subdirectory must supply rules for building sources it contributes
 Startup/%.o: ../Startup/%.s
-	arm-none-eabi-gcc -mcpu=cortex-m3 -g3 -c -x assembler-with-cpp  -mfloat-abi=soft -mthumb -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m3 -g3 -c -I"C:/Users/kowma/stm_code/HEAT_CHMBR/Src/PID" -I"C:/Users/kowma/stm_code/HEAT_CHMBR/Src/SERVIS" -x assembler-with-cpp  -mfloat-abi=soft -mthumb -o "$@" "$<"
 

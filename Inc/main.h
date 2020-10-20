@@ -40,6 +40,8 @@ extern "C" {
 #include "ntc.h"
 #include "time_counter.h"
 #include "PWM_CTRL.h"
+#include "PID.h"
+#include "servis.h"
 #include <stdlib.h>
 /* USER CODE END Includes */
 
@@ -48,6 +50,7 @@ extern "C" {
 TIM_HandleTypeDef htim1;
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma1;
+UART_HandleTypeDef huart3;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

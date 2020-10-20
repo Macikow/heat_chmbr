@@ -54,13 +54,14 @@ void ntc_handler(uint16_t ms_time_counter, uint8_t no_sensor)
 	ntc_handler_flag = NTC_HANDLER_FLAG_BUSY;
 	if(ms_time_counter != ms_counter) return;
 
-	LED_GREEN_GPIO_Port->BSRR = LED_GREEN_Pin;
+	//LED_GREEN_GPIO_Port->BSRR = LED_GREEN_Pin;
 		  //ntc_handler(500);
 
 	ntc_TEMP_SENS_calc();
 	ntc_analog_sensors_calc(no_sensor);
 
-	LED_GREEN_GPIO_Port->BRR = LED_GREEN_Pin;
+
+	//LED_GREEN_GPIO_Port->BRR = LED_GREEN_Pin;
 }
 
 double ntc_get_temp_sens_value(void)
@@ -118,6 +119,7 @@ void ntc_analog_sensors_calc(uint8_t no_sensor)
 		uint8_t number_of_components = sizeof(a3)/4;
 		do {
 			float power = 1;
+			for(uint8_t i = 0; i < number_of_components - 1; i++)
 			{
 				power = power*ntc_analog_values.NTC_resistance[no_sensor];
 			}
@@ -265,9 +267,8 @@ double ntc_convert_ADC_to_double(void)
 	return ntc_convert_kelvin_to_celsius(T);
 }
 
-uint8_t ntc_convert_float_to_string(char * string_table)
+uint8_t ntc_convert_float_to_string(uint8_t * string_table, double temperature_ntc)
 {
-	double temperature_ntc = ntc_convert_ADC_to_double();
 	uint8_t digit_counter = 0 ;
 	uint16_t i=10000;
 	uint16_t temperature_int_multiplied100;

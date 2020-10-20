@@ -11,7 +11,7 @@
 
 volatile uint8_t down_counter_flag;
 
-void tc_set_counter(uint8_t days,uint8_t hours, uint8_t minutes);
+void tc_set_counter(uint8_t hours, uint8_t minutes);
 void tc_run_downcounter(void);
 void tc_stop_downcounter(void);
 void tc_down_counter(void);

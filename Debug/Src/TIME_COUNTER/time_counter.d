@@ -34,6 +34,8 @@ Src/TIME_COUNTER/time_counter.o: ../Src/TIME_COUNTER/time_counter.c \
  C:/Users/kowma/stm_code/HEAT_CHMBR/Src/NTC/ntc.h \
  C:/Users/kowma/stm_code/HEAT_CHMBR/Src/TIME_COUNTER/time_counter.h \
  C:/Users/kowma/stm_code/HEAT_CHMBR/Src/PWM_CTRL/PWM_CTRL.h \
+ C:/Users/kowma/stm_code/HEAT_CHMBR/Src/PID/PID.h \
+ C:/Users/kowma/stm_code/HEAT_CHMBR/Src/SERVIS/servis.h \
  ../Src/TIME_COUNTER/time_counter.h
 
 ../Inc/main.h:
@@ -107,5 +109,9 @@ C:/Users/kowma/stm_code/HEAT_CHMBR/Src/NTC/ntc.h:
 C:/Users/kowma/stm_code/HEAT_CHMBR/Src/TIME_COUNTER/time_counter.h:
 
 C:/Users/kowma/stm_code/HEAT_CHMBR/Src/PWM_CTRL/PWM_CTRL.h:
+
+C:/Users/kowma/stm_code/HEAT_CHMBR/Src/PID/PID.h:
+
+C:/Users/kowma/stm_code/HEAT_CHMBR/Src/SERVIS/servis.h:
 
 ../Src/TIME_COUNTER/time_counter.h:

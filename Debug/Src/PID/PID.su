@@ -1,0 +1,2 @@
+PID.c:19:6:pid_set_setpoint_temp	0	static
+PID.c:24:8:get_setpoint_temperature	0	static

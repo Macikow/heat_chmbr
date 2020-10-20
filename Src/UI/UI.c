@@ -20,7 +20,13 @@
 #define BUTTON_HANDLER_FUNC_SET_TEMP 2
 
 
+#define UI_HEAT_FLAG_STABILIZING 2
+#define UI_HEAT_FLAG_HEATING 1
+#define UI_HEAT_FLAG_OFF 0
+
+
 uint8_t button_hold_on_counter =0;
+uint8_t ui_heating_flag =0;
 
 
 
@@ -75,6 +81,24 @@ void ui_set_temp_callback(){
 	button_handler_func = BUTTON_HANDLER_FUNC_SET_TEMP;
 	menu_refresh();
 }
+
+void ui_nc_start_heating(){
+	tc_set_counter(ns_time.hours, ns_time.minutes);
+	pid_set_setpoint_temp(ns_temp.temp);
+}
+void ui_mem1_start_heating(){
+	tc_set_counter(mem1_time.hours, mem1_time.minutes);
+	pid_set_setpoint_temp(mem1_temp.temp);
+}
+void ui_mem2_start_heating(){
+	tc_set_counter(mem2_time.hours, mem2_time.minutes);
+	pid_set_setpoint_temp(mem2_temp.temp);
+}
+void ui_mem3_start_heating(){
+	tc_set_counter(mem3_time.hours, mem3_time.minutes);
+	pid_set_setpoint_temp(mem3_temp.temp);
+}
+
 
 void ui_time_plus()
 {
@@ -492,7 +516,107 @@ void iu_button_hold_handler()
 			}
 		}
 	}
+}
 
+ char HEATING[] = "     Heating...     ";
+ char PROGRESS_BAR_1[] = "    [";
+ char PROGRESS_BAR_2[] = "]    ";
+ char ACTUAL_TEMP[] = "Actual temp.[";
+ char CELCIUS_CHAR = 0xdf;
+ char END_OF_TEMP[] = "C]";
+ char SET_TEMP[] = " Set temp.  [";
+
+uint8_t temp_progress_bar(double external_temp, double actual_temp, double setpoint)
+{
+	double sub;
+	if(actual_temp >= setpoint - 0.5 )
+	{
+		return 10;
+	}
+	else
+	{
+		sub = (setpoint - external_temp) / 10;
+		return  (actual_temp - external_temp)  / sub;
+	}
+}
+
+
+void iu_heating_process_handler(){
+
+	static uint16_t display_counter;
+	uint8_t str_table[20];
+	uint8_t progress_bar_value;
+	// external temperature
+	// get external temperature
+	// set temperature - external
+
+	progress_bar_value = temp_progress_bar(25.0, ntc_get_analog_sensors_value(0) , 45.0);
+	for(uint8_t i = 0 ; i< 10 ; i++)
+	{
+		lcd_buf_go_to(5+i,1);
+		if(progress_bar_value >= i )
+		{
+			lcd_char(0xff);
+		}
+		else
+		{
+			lcd_char(' ');
+		}
+	}
+	temp_progress_bar(25.0, ntc_get_analog_sensors_value(0) , 45.0);
+
+	if(ui_heating_flag == 0 /*UI_HEAT_FLAG_HEATING*/)
+	{
+		if(display_counter++ < 1000)
+		{
+			lcd_buf_go_to(0,0);
+			lcd_buf_write_text(&HEATING[0]);
+			lcd_buf_go_to(0,1);
+			lcd_buf_write_text(&PROGRESS_BAR_1[0]);
+			lcd_buf_go_to(15,1);
+			lcd_buf_write_text(&PROGRESS_BAR_2[0]);
+		}
+		else if(display_counter < 8000)
+		{
+			lcd_buf_go_to(0,0);
+			lcd_buf_write_text(&ACTUAL_TEMP[0]);
+			lcd_buf_go_to(13,0);
+			ntc_convert_float_to_string(&str_table[0],  ntc_get_analog_sensors_value(0));
+			lcd_buf_write_text((char*)&str_table[0]);
+			lcd_buf_go_to(17,0);
+			lcd_char(CELCIUS_CHAR);
+			lcd_buf_go_to(18,0);
+			lcd_buf_write_text(&END_OF_TEMP[0]);
+			lcd_buf_go_to(0,1);
+			lcd_buf_write_text(&PROGRESS_BAR_1[0]);
+			lcd_buf_go_to(15,1);
+			lcd_buf_write_text(&PROGRESS_BAR_2[0]);
+		}
+		else if(display_counter < 9000)
+		{
+			lcd_buf_go_to(0,0);
+			lcd_buf_write_text(&SET_TEMP[0]);
+			lcd_buf_go_to(13,0);
+			ntc_convert_float_to_string(&str_table[0], 45.0);
+			lcd_buf_write_text((char*)&str_table[0]);
+			lcd_buf_go_to(17,0);
+			lcd_char(CELCIUS_CHAR);
+			lcd_buf_go_to(18,0);
+			lcd_buf_write_text(&END_OF_TEMP[0]);
+			lcd_buf_go_to(0,1);
+			lcd_buf_write_text(&PROGRESS_BAR_1[0]);
+			lcd_buf_go_to(15,1);
+			lcd_buf_write_text(&PROGRESS_BAR_2[0]);
+		}
+		else
+		{
+			display_counter = 0;
+		}
+	}
+	else if(ui_heating_flag == UI_HEAT_FLAG_STABILIZING)
+	{
+
+	}
 }
 
 
@@ -502,6 +626,8 @@ void ui_handler()
 	if(ui_handler_flag == UI_HANDLER_FLAG_BUSY) return;
 
 	iu_button_hold_handler();
+
+	iu_heating_process_handler();
 
 	//red led control
 
