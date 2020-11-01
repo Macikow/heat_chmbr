@@ -229,6 +229,7 @@ void EXTI9_5_IRQHandler(void)
 	{
 		HAL_TIM_Base_Start_IT(&htim1);
 		HEATER_CTRL_GPIO_Port->BRR = HEATER_CTRL_Pin;
+		FAN_CTRL_GPIO_Port->BRR = FAN_CTRL_Pin;
 		//LED_RED_GPIO_Port->BRR = LED_RED_Pin;
 	}
   /* USER CODE END EXTI9_5_IRQn 0 */
@@ -266,8 +267,17 @@ void TIM1_CC_IRQHandler(void)
   /* USER CODE BEGIN TIM1_CC_IRQn 0 */
 	//HEATER_CTRL_GPIO_Port->BSRR = HEATER_CTRL_Pin;
 	// for a test	//LED_RED_GPIO_Port->BSRR = LED_RED_Pin;
+	if(TIM1->SR & TIM_IT_CC1)
+	{
+		HEATER_CTRL_GPIO_Port->BSRR = HEATER_CTRL_Pin;
+	}
 
-	HEATER_CTRL_GPIO_Port->BSRR = HEATER_CTRL_Pin;
+	if(TIM1->SR & TIM_IT_CC2)
+	{
+		FAN_CTRL_GPIO_Port->BSRR = FAN_CTRL_Pin;
+	}
+
+
 
 	/* USER CODE END TIM1_CC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim1);

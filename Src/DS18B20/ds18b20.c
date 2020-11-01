@@ -554,7 +554,7 @@ void convert_T_to_string_hex(char* temperature_str_hex, uint8_t sensorNumber)
 void ds18b20_initalize(void)
 {
 	ds18b20_search_rom();
-	ui_change_ds18B20_status(ds18b20_sensors_amount);
+	HC_status.ds18b20_amount = ds18b20_sensors_amount;
 }
 
 //uint8_t ds18b20_search_rom_only_one_sensor_in_bus(void)

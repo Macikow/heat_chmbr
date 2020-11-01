@@ -1,2 +1,5 @@
-PID.c:19:6:pid_set_setpoint_temp	0	static
-PID.c:24:8:get_setpoint_temperature	0	static
+PID.c:12:6:PID_manual_settings	0	static
+PID.c:20:6:PID_set_PWM	16	static
+PID.c:32:6:PID_control_handler	40	static
+PID.c:52:6:pid_set_setpoint_temp	0	static
+PID.c:57:8:get_setpoint_temperature	0	static

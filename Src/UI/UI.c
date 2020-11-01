@@ -31,17 +31,7 @@ uint8_t ui_heating_flag =0;
 
 
 
-struct statusStruct
-{
-	uint8_t ds18b20_amount;
-	uint8_t ntc_amount;
-	uint8_t heating_status;
-	uint16_t current_temperature;
-	uint16_t set_temperature;
-	uint16_t set_time;
-	uint16_t currnt_time;
-	uint8_t pc_connection_status;
-}HC_status;
+
 
 
 
@@ -674,25 +664,6 @@ void ui_handler()
 	// buzzer contorl
 
 	ui_handler_flag = UI_HANDLER_FLAG_BUSY;
-}
-
-
-
-
-
-void ui_change_ds18B20_status(uint8_t status)
-{
-	HC_status.ds18b20_amount = status;
-}
-
-void ui_change_ntc_status(uint8_t status)
-{
-	HC_status.ds18b20_amount = status;
-}
-
-void ui_change_heating_status(uint8_t status)
-{
-	HC_status.ds18b20_amount = status;
 }
 
 

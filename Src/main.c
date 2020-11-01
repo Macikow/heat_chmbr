@@ -113,7 +113,9 @@ int main(void)
   ntc_init();
   rom_value_init();
   ui_populate_with_rom_data();
-  __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1);
+  __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1| TIM_IT_CC2);
+
+  PID_manual_settings();
   //pwmctrl_enable_timer_irq();
 
 
@@ -129,8 +131,8 @@ int main(void)
 	  lcd_circle_bufer_refresh();
 	  ui_handler();
 	  ntc_handler(500, 0);
+	  PID_control_handler(600);
 	  servis_uart_send_ntc(720, 0);
-
 
     /* USER CODE BEGIN 3 */
   }
@@ -378,7 +380,10 @@ static void MX_TIM1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM1_Init 2 */
-
+  if (HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
+  {
+      Error_Handler();
+  }
   /* USER CODE END TIM1_Init 2 */
 
 }

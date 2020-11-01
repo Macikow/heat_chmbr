@@ -56,11 +56,23 @@ UART_HandleTypeDef huart3;
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 #define ADC_CHANNELS 4
- 
+
 uint16_t adc_value[ADC_CHANNELS];
 void increment_ms_counter(void);
 /* counts ms from 0 to 999  - its 1s overflow*/
 volatile uint16_t ms_counter;
+
+
+struct statusStruct
+{
+	uint8_t ds18b20_amount;
+	uint8_t ntc_amount;
+  uint8_t ntc_enable_sensor_mask; //example   1111 1xxx - only 3 socket enable
+	uint8_t heating_status;
+	uint8_t pc_connection_status;
+	uint8_t pressure_sensor_status;
+	uint8_t humidity_sensor_status;
+}HC_status;
 
 /* USER CODE END EC */
 

@@ -39,11 +39,37 @@ struct ADC_struct{
 	double NTC_temperature[3];
 
 	double TEMP_SENS_temperature;
-}ntc_analog_values;
+}ntc_analog_temp[5];
+
 
 void ntc_init()
 {
-	ui_change_ntc_status(ntc_check_analog_sensors_status());
+	uint8_t ntc_sensors_enable_cnt =0;
+	uint8_t ntc_sensors_enable_msk =0xff;
+
+
+	// wypełnienie próbek
+	for(uint8_t pr_cnt = 0; pr_cnt < 5 ; pr_cnt++) //  wypełenie 5 próbek
+	{
+		for(uint8_t senor_cnt = 0; senor_cnt < 3 ; senor_cnt++) // trzech możliwych czujników
+		{
+			ntc_analog_sensors_calc(senor_cnt);
+		}
+	}
+	for(uint8_t senor_cnt = 0; senor_cnt < 3 ; senor_cnt++) // trzech możliwych czujników
+	{
+		if(ntc_get_analog_sensors_value(senor_cnt) != 0 )
+		{
+			ntc_sensors_enable_cnt++;
+			ntc_sensors_enable_msk |= (1<<senor_cnt);
+		}
+		else
+		{
+			ntc_sensors_enable_msk &= ~(1<<senor_cnt);
+		}
+	}
+	HC_status.ntc_amount = ntc_sensors_enable_cnt;
+	HC_status.ntc_enable_sensor_mask = ntc_sensors_enable_msk;
 }
 
 
@@ -66,12 +92,19 @@ void ntc_handler(uint16_t ms_time_counter, uint8_t no_sensor)
 
 double ntc_get_temp_sens_value(void)
 {
-	return ntc_analog_values.TEMP_SENS_temperature;
+	double temp_sens_avg =0;
+	for(uint8_t temp_pr_cnt =0 ; temp_pr_cnt< 5 ; temp_pr_cnt++ )
+	{
+		temp_sens_avg += ntc_analog_temp[temp_pr_cnt].TEMP_SENS_temperature;
+	}
+	return (temp_sens_avg/5);
 }
 
 void ntc_TEMP_SENS_calc(void)
 {
-	ntc_analog_values.TEMP_SENS_temperature = (((V25 * 1000.0 - (double)adc_value[3] * 0.8) / AVGSLOPE) + 25.0);
+	static uint8_t probe_counter;
+	if(probe_counter++ > 5 ) probe_counter=0;
+	ntc_analog_temp[probe_counter].TEMP_SENS_temperature = (((V25 * 1000.0 - (double)adc_value[3] * 0.8) / AVGSLOPE) + 25.0);
 }
 
 
@@ -79,150 +112,162 @@ void ntc_TEMP_SENS_calc(void)
 // dokumentacja znajduje sie w pliku ln_aprox.m
 void ntc_analog_sensors_calc(uint8_t no_sensor)
 {
+	static uint8_t probe_s0,probe_s1,probe_s2;
+	uint8_t probe =0;
+	if(probe_s0 >= 5) probe_s0 = 0;
+	if(probe_s1 >= 5) probe_s1 = 0;
+	if(probe_s2 >= 5) probe_s2 = 0;
+
+	if(no_sensor == 0 ) probe = probe_s0;
+	if(no_sensor == 1 ) probe = probe_s1;
+	if(no_sensor == 2 ) probe = probe_s2;
+
 	const double V_DD = 3.32;
 	const uint16_t R_divide = 33000;
 	uint8_t iterator = 0;
 
 	if(adc_value[no_sensor] == 0) return ;
-	ntc_analog_values.NTC_voltage[no_sensor] = adc_value[no_sensor] * V_DD / 4095;
-	ntc_analog_values.NTC_resistance[no_sensor] = R_divide * V_DD / ntc_analog_values.NTC_voltage[no_sensor] - R_divide;
+	ntc_analog_temp[probe].NTC_voltage[no_sensor] = adc_value[no_sensor] * V_DD / 4095;
+	ntc_analog_temp[probe].NTC_resistance[no_sensor] = R_divide * V_DD / ntc_analog_temp[probe].NTC_voltage[no_sensor] - R_divide;
 
-	if(ntc_analog_values.NTC_resistance[no_sensor] > 100 && ntc_analog_values.NTC_resistance[no_sensor] <= 1000)
+	if(ntc_analog_temp[probe].NTC_resistance[no_sensor] > 100 && ntc_analog_temp[probe].NTC_resistance[no_sensor] <= 1000)
 	{
-		ntc_analog_values.NTC_temperature[no_sensor] = 0;
+		ntc_analog_temp[probe].NTC_temperature[no_sensor] = 0;
 		uint8_t number_of_components = sizeof(a1)/4;
 		do {
 			float power = 1;
 			for(uint8_t i = 0; i < number_of_components - 1; i++)
 			{
-				power = power*ntc_analog_values.NTC_resistance[no_sensor];
+				power = power*ntc_analog_temp[probe].NTC_resistance[no_sensor];
 			}
-			ntc_analog_values.NTC_temperature[no_sensor] += a1[iterator++]*power;
+			ntc_analog_temp[probe].NTC_temperature[no_sensor] += a1[iterator++]*power;
 		} while(number_of_components--);
 	}
-	else if(ntc_analog_values.NTC_resistance[no_sensor] > 1000 && ntc_analog_values.NTC_resistance[no_sensor] <= 5000)
+	else if(ntc_analog_temp[probe].NTC_resistance[no_sensor] > 1000 && ntc_analog_temp[probe].NTC_resistance[no_sensor] <= 5000)
 	{
-		ntc_analog_values.NTC_temperature[no_sensor] = 0;
+		ntc_analog_temp[probe].NTC_temperature[no_sensor] = 0;
 		uint8_t number_of_components = sizeof(a2)/4;
 		do {
 			float power = 1;
 			for(uint8_t i = 0; i < number_of_components - 1; i++)
 			{
-				power = power*ntc_analog_values.NTC_resistance[no_sensor];
+				power = power*ntc_analog_temp[probe].NTC_resistance[no_sensor];
 			}
-			ntc_analog_values.NTC_temperature[no_sensor] += a2[iterator++]*power;
+			ntc_analog_temp[probe].NTC_temperature[no_sensor] += a2[iterator++]*power;
 		} while(number_of_components--);
 	}
-	else if(ntc_analog_values.NTC_resistance[no_sensor] > 5000 && ntc_analog_values.NTC_resistance[no_sensor] <= 10000)
+	else if(ntc_analog_temp[probe].NTC_resistance[no_sensor] > 5000 && ntc_analog_temp[probe].NTC_resistance[no_sensor] <= 10000)
 	{
-		ntc_analog_values.NTC_temperature[no_sensor] = 0;
+		ntc_analog_temp[probe].NTC_temperature[no_sensor] = 0;
 		uint8_t number_of_components = sizeof(a3)/4;
 		do {
 			float power = 1;
 			for(uint8_t i = 0; i < number_of_components - 1; i++)
 			{
-				power = power*ntc_analog_values.NTC_resistance[no_sensor];
+				power = power*ntc_analog_temp[probe].NTC_resistance[no_sensor];
 			}
-			ntc_analog_values.NTC_temperature[no_sensor] += a3[iterator++]*power;
+			ntc_analog_temp[probe].NTC_temperature[no_sensor] += a3[iterator++]*power;
 		} while(number_of_components--);
 	}
-	else if(ntc_analog_values.NTC_resistance[no_sensor] > 10000 && ntc_analog_values.NTC_resistance[no_sensor] <= 12000)
+	else if(ntc_analog_temp[probe].NTC_resistance[no_sensor] > 10000 && ntc_analog_temp[probe].NTC_resistance[no_sensor] <= 12000)
 	{
-		ntc_analog_values.NTC_temperature[no_sensor] = 0;
+		ntc_analog_temp[probe].NTC_temperature[no_sensor] = 0;
 		uint8_t number_of_components = sizeof(a4)/4;
 		do {
 			float power = 1;
 			for(uint8_t i = 0; i < number_of_components - 1; i++)
 			{
-				power = power*ntc_analog_values.NTC_resistance[no_sensor];
+				power = power*ntc_analog_temp[probe].NTC_resistance[no_sensor];
 			}
-			ntc_analog_values.NTC_temperature[no_sensor] += a4[iterator++]*power;
+			ntc_analog_temp[probe].NTC_temperature[no_sensor] += a4[iterator++]*power;
 		} while(number_of_components--);
 	}
-	else if(ntc_analog_values.NTC_resistance[no_sensor] > 12000 && ntc_analog_values.NTC_resistance[no_sensor] <= 20000)
+	else if(ntc_analog_temp[probe].NTC_resistance[no_sensor] > 12000 && ntc_analog_temp[probe].NTC_resistance[no_sensor] <= 20000)
 	{
-		ntc_analog_values.NTC_temperature[no_sensor] = 0;
+		ntc_analog_temp[probe].NTC_temperature[no_sensor] = 0;
 		uint8_t number_of_components = sizeof(a5)/4;
 		do {
 			float power = 1;
 			for(uint8_t i = 0; i < number_of_components - 1; i++)
 			{
-				power = power*ntc_analog_values.NTC_resistance[no_sensor];
+				power = power*ntc_analog_temp[probe].NTC_resistance[no_sensor];
 			}
-			ntc_analog_values.NTC_temperature[no_sensor] += a5[iterator++]*power;
+			ntc_analog_temp[probe].NTC_temperature[no_sensor] += a5[iterator++]*power;
 		} while(number_of_components--);
 	}
-	else if(ntc_analog_values.NTC_resistance[no_sensor] > 20000 && ntc_analog_values.NTC_resistance[no_sensor] <= 40000)
+	else if(ntc_analog_temp[probe].NTC_resistance[no_sensor] > 20000 && ntc_analog_temp[probe].NTC_resistance[no_sensor] <= 40000)
 	{
-		ntc_analog_values.NTC_temperature[no_sensor] = 0;
+		ntc_analog_temp[probe].NTC_temperature[no_sensor] = 0;
 		uint8_t number_of_components = sizeof(a6)/4;
 		do {
 			float power = 1;
 			for(uint8_t i = 0; i < number_of_components - 1; i++)
 			{
-				power = power*ntc_analog_values.NTC_resistance[no_sensor];
+				power = power*ntc_analog_temp[probe].NTC_resistance[no_sensor];
 			}
-			ntc_analog_values.NTC_temperature[no_sensor] += a6[iterator++]*power;
+			ntc_analog_temp[probe].NTC_temperature[no_sensor] += a6[iterator++]*power;
 		} while(number_of_components--);
 	}
-	else if(ntc_analog_values.NTC_resistance[no_sensor] > 40000 && ntc_analog_values.NTC_resistance[no_sensor] <= 60000 )
+	else if(ntc_analog_temp[probe].NTC_resistance[no_sensor] > 40000 && ntc_analog_temp[probe].NTC_resistance[no_sensor] <= 60000 )
 	{
-		ntc_analog_values.NTC_temperature[no_sensor] = 0;
+		ntc_analog_temp[probe].NTC_temperature[no_sensor] = 0;
 		uint8_t number_of_components = sizeof(a7)/4;
 		do {
 			float power = 1;
 			for(uint8_t i = 0; i < number_of_components - 1; i++)
 			{
-				power = power*ntc_analog_values.NTC_resistance[no_sensor];
+				power = power*ntc_analog_temp[probe].NTC_resistance[no_sensor];
 			}
-			ntc_analog_values.NTC_temperature[no_sensor] += a7[iterator++]*power;
+			ntc_analog_temp[probe].NTC_temperature[no_sensor] += a7[iterator++]*power;
 		} while(number_of_components--);
 	}
-	else if(ntc_analog_values.NTC_resistance[no_sensor] > 60000 && ntc_analog_values.NTC_resistance[no_sensor] <= 100000 )
+	else if(ntc_analog_temp[probe].NTC_resistance[no_sensor] > 60000 && ntc_analog_temp[probe].NTC_resistance[no_sensor] <= 100000 )
 	{
-		ntc_analog_values.NTC_temperature[no_sensor] = 0;
+		ntc_analog_temp[probe].NTC_temperature[no_sensor] = 0;
 		uint8_t number_of_components = sizeof(a8)/4;
 		do {
 			float power = 1;
 			for(uint8_t i = 0; i < number_of_components - 1; i++)
 			{
-				power = power*ntc_analog_values.NTC_resistance[no_sensor];
+				power = power*ntc_analog_temp[probe].NTC_resistance[no_sensor];
 			}
-			ntc_analog_values.NTC_temperature[no_sensor] += a8[iterator++]*power;
+			ntc_analog_temp[probe].NTC_temperature[no_sensor] += a8[iterator++]*power;
 		} while(number_of_components--);
 	}
-	else if(ntc_analog_values.NTC_resistance[no_sensor] > 100000 && ntc_analog_values.NTC_resistance[no_sensor] <= 200000 )
+	else if(ntc_analog_temp[probe].NTC_resistance[no_sensor] > 100000 && ntc_analog_temp[probe].NTC_resistance[no_sensor] <= 200000 )
 	{
-		ntc_analog_values.NTC_temperature[no_sensor] = 0;
+		ntc_analog_temp[probe].NTC_temperature[no_sensor] = 0;
 		uint8_t number_of_components = sizeof(a9)/4;
 		do {
 			float power = 1;
 			for(uint8_t i = 0; i < number_of_components - 1; i++)
 			{
-				power = power*ntc_analog_values.NTC_resistance[no_sensor];
+				power = power*ntc_analog_temp[probe].NTC_resistance[no_sensor];
 			}
-			ntc_analog_values.NTC_temperature[no_sensor] += a9[iterator++]*power;
+			ntc_analog_temp[probe].NTC_temperature[no_sensor] += a9[iterator++]*power;
 		} while(number_of_components--);
 	}
-	//ntc_analog_values.NTC_temperature[no_sensor] = BETA * T_0 / (T_0 * log(ntc_analog_values.NTC_resistance[no_sensor]/10000) + BETA) - 273.15;
+	if(no_sensor == 0 ) probe_s0++;
+	if(no_sensor == 1 ) probe_s1++;
+	if(no_sensor == 2 ) probe_s2++;
+	//ntc_analog_temp[probe].NTC_temperature[no_sensor] = BETA * T_0 / (T_0 * log(ntc_analog_temp[probe].NTC_resistance[no_sensor]/10000) + BETA) - 273.15;
 }
 
 uint8_t ntc_check_analog_sensors_status(void)
 {
-	uint8_t ntc_counter =0;
-	for(uint8_t analog_sens_count = 0; analog_sens_count < (ADC_CHANNELS - 1) ; analog_sens_count++ )
-	{
-		if(ntc_analog_values.NTC_temperature[analog_sens_count] != 0) ntc_counter++;
-	}
-	return ntc_counter;
+
+	return 1 ; // TODO poprawić funkcje sprawdzającą czy czujnik jest podłączony do układu
 }
 
 double ntc_get_analog_sensors_value(uint8_t no_of_sensor)
 {
-	if(no_of_sensor == 0)		return ntc_analog_values.NTC_temperature[0];
-	else if(no_of_sensor == 1)	return ntc_analog_values.NTC_temperature[1];
-	else if(no_of_sensor == 2)	return ntc_analog_values.NTC_temperature[2];
-	else return 0;
+	double temp_avg=0;
+	for(uint8_t probe_cnt=0 ; probe_cnt < 5; probe_cnt++ )
+	{
+		temp_avg += ntc_analog_temp[probe_cnt].NTC_temperature[no_of_sensor];
+	}
+	temp_avg = temp_avg / 5;
+	return temp_avg;
 }
 
 void ntc_start_continous_converting(void)
