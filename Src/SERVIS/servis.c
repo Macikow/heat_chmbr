@@ -45,14 +45,14 @@ void servis_static_data_refresh()
 void refresh_temp_struct(void)
 {
 	// copy ntc value
-	for(uint8_t ntc_cnt =0; ntc_cnt< 3 ; ntc_cnt++)
-	{
-		sData_packet.sTemp.temp_sensor_ntc[ntc_cnt] = ntc_get_analog_sensors_value(ntc_cnt);
-	}
-	for(uint8_t ds18b20_cnt =0; ds18b20_cnt< 2 ; ds18b20_cnt++)
-	{
-		sData_packet.sTemp.temp_ds_sensor[ds18b20_cnt] = ds18b20_get_scratchpad_temperature(ds18b20_cnt);
-	}
+//	for(uint8_t ntc_cnt =0; ntc_cnt< 3 ; ntc_cnt++)
+//	{
+//		sData_packet.sTemp.temp_sensor_ntc[ntc_cnt] = ntc_get_analog_sensors_value(ntc_cnt);
+//	}
+//	for(uint8_t ds18b20_cnt =0; ds18b20_cnt< 2 ; ds18b20_cnt++)
+//	{
+//		sData_packet.sTemp.temp_ds_sensor[ds18b20_cnt] = ds18b20_get_scratchpad_temperature(ds18b20_cnt,);
+//	}
 	// copy dc value
 }
 

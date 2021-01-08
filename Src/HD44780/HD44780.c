@@ -9,6 +9,18 @@
 #define LCD_COLS 20
 #define LCD_ROWS 2
 
+const uint8_t custom_font_pattern[][8] =
+{
+		{0x1f, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x1f}, // window
+		{0x8, 0xc, 0xe, 0xf, 0xe, 0xc, 0x8, 0x0}, // selected arrow
+		{0x0, 0x0, 0x7, 0x4, 0x4, 0x1f, 0xe, 0x4}, // down arrow
+		{0x0, 0x0, 0x4, 0xa, 0x11, 0x1f, 0x0, 0x0}, // delta
+		{0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10}, //1 line
+		{0x8, 0x8, 0x8, 0x8, 0x8, 0x8, 0x8, 0x8}, // 2 line
+		{0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2}, // 4 line
+		{0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1}  // 5 line
+};
+
 
 
 uint8_t write_buf_x_pos = 0;
@@ -19,12 +31,12 @@ uint8_t write_buf_y_pos = 0;
 //
 //-------------------------------------------------------------------------------------------------
 void LCD_Data_Bus_Input(void){
-	GPIOB->CRL &= 0x0000ffff;
-	GPIOB->CRL |= 0x88880000; // TODO zmiana na 4 piny
+	GPIOB->CRL &= 0x000000ff;
+	GPIOB->CRL |= 0x88888800; 	// TODO sprawdzić czy nie będzie problemów z czujnikami
 }
 void LCD_Data_Bus_Output(void){
-	GPIOB->CRL &= 0x0000ffff;
-	GPIOB->CRL |= 0x77770000; // TODO zmiana na 4 piny
+	GPIOB->CRL &= 0x000000ff;
+	GPIOB->CRL |= 0x77777700;	// TODO sprawdzić czy nie będzie problemów z czujnikami
 }
 
 void _LCD_Send_Half(uint8_t half_byte)
@@ -32,9 +44,9 @@ void _LCD_Send_Half(uint8_t half_byte)
 	half_byte = (half_byte & 0x0f);
 	LCD_E_GPIO_Port->ODR |= LCD_E_Pin;
 	simple_delay_us(8);
-	// TODO zmiana na 4 piny
-	LCD_D0_GPIO_Port->ODR &= 0xff0f;
-	LCD_D0_GPIO_Port->ODR |= (half_byte << 4);
+
+	LCD_D4_GPIO_Port->ODR &= 0xfff0;
+	LCD_D4_GPIO_Port->ODR |= half_byte;
 
 	simple_delay_us(8);
 	LCD_E_GPIO_Port->ODR &= ~LCD_E_Pin;
@@ -59,8 +71,7 @@ uint8_t _LCD_Read_Half()
 	uint8_t tmp = 0;
 	LCD_E_GPIO_Port->ODR |= LCD_E_Pin;
 	simple_delay_us(8);
-	tmp = (uint8_t) (LCD_D0_GPIO_Port->IDR & 0x00f0);
-	tmp = tmp >> 4;
+	tmp = (uint8_t) (LCD_D4_GPIO_Port->IDR & 0x000f);
 	simple_delay_us(8);
 	LCD_E_GPIO_Port->ODR &= ~LCD_E_Pin;
 	return tmp;
@@ -100,7 +111,7 @@ void LCD_WriteCommand(uint8_t command){
 // Funkcja odczytu bajtu statusowego
 //
 //-------------------------------------------------------------------------------------------------
-uint8_t LCD_ReadStatus(void){ // TODO zmian na 4 piny
+uint8_t LCD_ReadStatus(void){
 	LCD_RS_GPIO_Port->ODR &= ~LCD_RS_Pin;
 	simple_delay_us(8);
 	return _LCD_Read();
@@ -176,8 +187,8 @@ void LCD_Initalize(void)
 
 	for(uint8_t i = 0; i < 3; i++){
 		LCD_E_GPIO_Port->ODR |= LCD_E_Pin;
-		LCD_D0_GPIO_Port->ODR &= 0xff0f;
-		LCD_D0_GPIO_Port->ODR |=  0x0030;
+		LCD_D4_GPIO_Port->ODR &= 0xfff0;
+		LCD_D4_GPIO_Port->ODR |=  0x0003;
 		LCD_E_GPIO_Port->ODR &= ~LCD_E_Pin;
 		simple_delay_ms(5);
 	  }
@@ -192,6 +203,14 @@ void LCD_Initalize(void)
 	simple_delay_ms(1);
 	LCD_WriteCommand(HD44780_DISPLAY_ONOFF | HD44780_DISPLAY_ON | HD44780_CURSOR_OFF | HD44780_CURSOR_NOBLINK);
 
+	for(uint8_t i=0; i< 8 ;i++)
+	{
+		LCD_WriteCommand(0x40 + i*8);
+		for(uint8_t j =0; j< 8; j++)
+		{
+			LCD_WriteData(custom_font_pattern[i][j]);
+		}
+	}
 }
 
 
@@ -204,7 +223,7 @@ void lcd_buf_go_to(uint8_t buf_x, uint8_t buf_y )
 
 void lcd_char(char c)
 {
-	lcd_buf[write_buf_y_pos][write_buf_x_pos] = c;
+	lcd_buf[write_buf_y_pos][write_buf_x_pos++] = c;
 }
 
 

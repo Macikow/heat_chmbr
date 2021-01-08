@@ -184,17 +184,19 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-	HAL_IncTick();
-	ui_handler_flag = UI_HANDLER_FLAG_FREE;
-	ntc_handler_flag = NTC_HANDLER_FLAG_FREE;
-	if(++ms_counter >= 1000)
-	{
-		ms_counter = 0;
-	}
-  /* USER CODE END SysTick_IRQn 0 */
+	//HAL_IncTick();
 
+  /* USER CODE END SysTick_IRQn 0 */
+  HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
+  ui_handler_flag = UI_HANDLER_FLAG_FREE;
+  ntc_handler_flag = NTC_HANDLER_FLAG_FREE;
+  ds_handler_flag = DS_HANDLER_FLAG_FREE;
+  if(++ms_counter >= 1000)
+  {
+  	ms_counter = 0;
+  }
   /* USER CODE END SysTick_IRQn 1 */
 }
 
@@ -279,7 +281,7 @@ void TIM1_CC_IRQHandler(void)
 
 
 
-	/* USER CODE END TIM1_CC_IRQn 0 */
+  /* USER CODE END TIM1_CC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim1);
   /* USER CODE BEGIN TIM1_CC_IRQn 1 */
 

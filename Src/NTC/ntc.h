@@ -12,6 +12,11 @@
 
 #define NTC_HANDLER_FLAG_FREE 0
 #define NTC_HANDLER_FLAG_BUSY 1
+#define DS_HANDLER_FLAG_FREE 0
+#define DS_HANDLER_FLAG_BUSY 1
+
+#define NTC_DIVIDER 10000
+#define NTC_VOLTAGE_SUPPLY 3.3
 
 
 uint16_t adc_value[ADC_CHANNELS];
@@ -19,8 +24,9 @@ uint16_t adc_value[ADC_CHANNELS];
 
 
 volatile uint8_t ntc_handler_flag;
+volatile uint8_t ds_handler_flag;
 
-void ntc_handler(uint16_t ms_time_counter, uint8_t no_sensor);
+void ntc_handler(uint16_t ms_time_counter);
 
 
 void ntc_init(void);

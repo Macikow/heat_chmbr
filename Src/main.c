@@ -41,12 +41,13 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-
+ADC_HandleTypeDef hadc1;
 
 SPI_HandleTypeDef hspi2;
 
+TIM_HandleTypeDef htim1;
 
-
+UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
 
@@ -99,42 +100,38 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_ADC1_Init();
- // MX_SPI2_Init();
+  MX_SPI2_Init();
   MX_TIM1_Init();
-  simple_delay_ms(500);
   MX_USART3_UART_Init();
-  LCD_Initalize();
-  HAL_FLASH_Unlock();
-  if( EE_Init() != HAL_OK) Error_Handler();
- // HAL_FLASH_Lock();
   /* USER CODE BEGIN 2 */
-
-  ds18b20_initalize();
+  LCD_Initalize();
+  ds18b20_initalize(0);
   ntc_init();
   rom_value_init();
   ui_populate_with_rom_data();
   __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1| TIM_IT_CC2);
 
-  PID_manual_settings();
+  //PID_manual_settings();
   //pwmctrl_enable_timer_irq();
 
+  LED_GREEN_GPIO_Port->BSRR = LED_GREEN_Pin;
 
   /* USER CODE END 2 */
-
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
-	  //lcd_handler();
-	  lcd_circle_bufer_refresh();
-	  ui_handler();
-	  ntc_handler(500, 0);
-	  PID_control_handler(600);
-	  servis_uart_send_ntc(720, 0);
 
     /* USER CODE BEGIN 3 */
+	  lcd_circle_bufer_refresh();
+	  ui_handler();
+	  ds18b20_convert_temperature(10);  //duration 5ms [10 - 15]ms read in  10 + 750 ms  = 95ms
+	  ds18b20_read_primary_sensor(770); //duration 5ms [835 - 940]ms read in  10 + 750ms  = 95ms
+	  ntc_handler(100);
+	 // ds18b20_get_scratchpad_temperature(175,0,0);
+	  //ds18b20_get_scratchpad_temperature(200,0,1);
   }
   /* USER CODE END 3 */
 }
@@ -404,7 +401,7 @@ static void MX_USART3_UART_Init(void)
 
   /* USER CODE END USART3_Init 1 */
   huart3.Instance = USART3;
-  huart3.Init.BaudRate = 9600;
+  huart3.Init.BaudRate = 115200;
   huart3.Init.WordLength = UART_WORDLENGTH_8B;
   huart3.Init.StopBits = UART_STOPBITS_1;
   huart3.Init.Parity = UART_PARITY_NONE;
@@ -438,11 +435,11 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, ONE_WIRE_DATA1_Pin|ONE_WIRE_DATA2_Pin|LED_RED_Pin|LED_GREEN_Pin 
-                          |BUZZER_Pin|FAN_CTRL_Pin|HEATER_CTRL_Pin|LCD_RS_Pin, GPIO_PIN_RESET);
+                          |BUZZER_Pin|VBUS_Pin|HEATER_CTRL_Pin|LCD_RS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LCD_D0_Pin|LCD_D1_Pin|LCD_D1B2_Pin|LCD_D3_Pin 
-                          |LCD_D4_Pin|LCD_D5_Pin|LCD_D6_Pin|LCD_D7_Pin 
+  HAL_GPIO_WritePin(GPIOB, LCD_D4_Pin|LCD_D5_Pin|LCD_D6_Pin|LCD_D7_Pin 
+                          |FAN_CTRL_Pin|D_PULL_Pin|MPL_CS_Pin|BME_CS_Pin 
                           |LCD_E_Pin|LCD_RW_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : BUTTON_DOWN_Pin BUTTON_EXIT_Pin BUTTON_OK_Pin */
@@ -452,9 +449,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : ONE_WIRE_DATA1_Pin ONE_WIRE_DATA2_Pin LED_RED_Pin LED_GREEN_Pin 
-                           BUZZER_Pin FAN_CTRL_Pin HEATER_CTRL_Pin LCD_RS_Pin */
+                           BUZZER_Pin VBUS_Pin HEATER_CTRL_Pin LCD_RS_Pin */
   GPIO_InitStruct.Pin = ONE_WIRE_DATA1_Pin|ONE_WIRE_DATA2_Pin|LED_RED_Pin|LED_GREEN_Pin 
-                          |BUZZER_Pin|FAN_CTRL_Pin|HEATER_CTRL_Pin|LCD_RS_Pin;
+                          |BUZZER_Pin|VBUS_Pin|HEATER_CTRL_Pin|LCD_RS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -466,11 +463,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(ZCD_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LCD_D0_Pin LCD_D1_Pin LCD_D1B2_Pin LCD_D3_Pin 
-                           LCD_D4_Pin LCD_D5_Pin LCD_D6_Pin LCD_D7_Pin 
+  /*Configure GPIO pins : LCD_D4_Pin LCD_D5_Pin LCD_D6_Pin LCD_D7_Pin 
+                           FAN_CTRL_Pin D_PULL_Pin MPL_CS_Pin BME_CS_Pin 
                            LCD_E_Pin LCD_RW_Pin */
-  GPIO_InitStruct.Pin = LCD_D0_Pin|LCD_D1_Pin|LCD_D1B2_Pin|LCD_D3_Pin 
-                          |LCD_D4_Pin|LCD_D5_Pin|LCD_D6_Pin|LCD_D7_Pin 
+  GPIO_InitStruct.Pin = LCD_D4_Pin|LCD_D5_Pin|LCD_D6_Pin|LCD_D7_Pin 
+                          |FAN_CTRL_Pin|D_PULL_Pin|MPL_CS_Pin|BME_CS_Pin 
                           |LCD_E_Pin|LCD_RW_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;

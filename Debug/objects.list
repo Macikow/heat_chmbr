@@ -27,6 +27,8 @@
 "Src/SERVIS/servis.o"
 "Src/TIME_COUNTER/time_counter.o"
 "Src/UI/UI.o"
+"Src/UI/indicators.o"
+"Src/UI/infinite_heater.o"
 "Src/main.o"
 "Src/stm32f1xx_hal_msp.o"
 "Src/stm32f1xx_it.o"

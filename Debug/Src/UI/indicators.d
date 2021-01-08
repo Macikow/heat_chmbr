@@ -1,4 +1,4 @@
-Src/NTC/ntc.o: ../Src/NTC/ntc.c ../Inc/main.h \
+Src/UI/indicators.o: ../Src/UI/indicators.c ../Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
@@ -35,8 +35,7 @@ Src/NTC/ntc.o: ../Src/NTC/ntc.c ../Inc/main.h \
  C:/Users/kowma/stm_code/HEAT_CHMBR/Src/TIME_COUNTER/time_counter.h \
  C:/Users/kowma/stm_code/HEAT_CHMBR/Src/PWM_CTRL/PWM_CTRL.h \
  C:/Users/kowma/stm_code/HEAT_CHMBR/Src/PID/PID.h \
- C:/Users/kowma/stm_code/HEAT_CHMBR/Src/SERVIS/servis.h ../Src/NTC/ntc.h \
- ../Src/NTC/ntc_beata3984.h
+ C:/Users/kowma/stm_code/HEAT_CHMBR/Src/SERVIS/servis.h
 
 ../Inc/main.h:
 
@@ -113,7 +112,3 @@ C:/Users/kowma/stm_code/HEAT_CHMBR/Src/PWM_CTRL/PWM_CTRL.h:
 C:/Users/kowma/stm_code/HEAT_CHMBR/Src/PID/PID.h:
 
 C:/Users/kowma/stm_code/HEAT_CHMBR/Src/SERVIS/servis.h:
-
-../Src/NTC/ntc.h:
-
-../Src/NTC/ntc_beata3984.h:

@@ -1,0 +1,7 @@
+infinite_heater.c:81:12:set_point_display	0	static
+infinite_heater.c:91:12:exit_confirmation_display	0	static
+infinite_heater.c:96:12:exit_ih_display	0	static
+infinite_heater.c:106:12:near_temp_display	0	static
+infinite_heater.c:29:6:progress_bar_display	40	static
+infinite_heater.c:61:12:heating_display	8	static
+infinite_heater.c:141:6:infinite_heater_handler	8	static

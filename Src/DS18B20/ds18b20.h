@@ -31,6 +31,9 @@
 #define WRITE_ERROR 0
 #define WRITE_OK 1
 
+#define ONE_W_INIT_ERROR 0
+
+
 #define GET_TEMPERATURE_ERROR 0xffff
 #define GET_CONFIG_ERROR 0xff
 
@@ -57,28 +60,33 @@
 
 
 void delay_check(void);
-uint8_t oneWire_init(void);
-void oneWire_writeBit(uint8_t value);
-void oneWire_writeByte(uint8_t byte);
-uint8_t oneWire_readbit(void);
-uint8_t ds18b20_search_rom(void);
-uint8_t ds18b20_read_scratchpad(uint8_t sensorNumber);
-uint8_t ds18b20_write_scratchpad(uint8_t sensorNumber, uint16_t temp_alarm, uint8_t resolution);
-uint8_t ds18b20_copy_scratchpad(uint8_t sensorNumber);
-uint8_t ds18b20_set_default_resolution(uint8_t sensorNumber);
+uint8_t oneWire_init(uint8_t input_no);
+//void oneWire_writeBit(uint8_t value);
+//void oneWire_writeByte(uint8_t byte);
+uint8_t oneWire_readbit(uint8_t input_no);
 
-uint16_t ds18b20_get_scratchpad_temperature(uint8_t sensor_number);
-uint16_t ds18b20_get_scratchpad_userBytes(uint8_t sensor_number);
-uint16_t ds18b20_get_scratchpad_temperature(uint8_t sensor_number);
-uint8_t ds18b20_get_scratchpad_config(uint8_t sensor_number);
-uint8_t ds18b20_get_scratchpad_crc(uint8_t sensor_number);
+uint8_t ds18b20_search_rom(uint8_t input_no);
+uint8_t ds18b20_read_scratchpad(uint8_t sensorNumber,uint8_t input_no);
+uint8_t ds18b20_write_scratchpad(uint8_t sensorNumber, uint16_t temp_alarm, uint8_t resolution,uint8_t input_no);
+uint8_t ds18b20_copy_scratchpad(uint8_t sensorNumber,uint8_t input_no);
+uint8_t ds18b20_set_default_resolution(uint8_t sensorNumber,uint8_t input_no);
+
+uint16_t ds18b20_get_scratchpad_temperature(uint8_t sensor_number,uint8_t input_no);
+uint16_t ds18b20_get_scratchpad_userBytes(uint8_t sensor_number,uint8_t input_no);
+uint16_t ds18b20_get_scratchpad_temperature(uint8_t sensor_number,uint8_t input_no);
+uint8_t ds18b20_get_scratchpad_config(uint8_t sensor_number,uint8_t input_no);
+uint8_t ds18b20_get_scratchpad_crc(uint8_t sensor_number,uint8_t input_no);
+
+uint8_t ds18b20_convertTA(uint8_t input_no);
+void ds18b20_convert_temperature(uint16_t ms_time_counter);
+void ds18b20_read_primary_sensor(uint16_t ms_time_counter);
 
 
 unsigned char crc8(void const *mem, size_t len);
 
-void convert_T_to_string_hex(char* temperature_str_hex, uint8_t sensorNumber);
+void convert_T_to_string_hex(char* temperature_str_hex, uint8_t sensorNumber,uint8_t input_no);
 
-void ds18b20_initalize(void);
+void ds18b20_initalize(uint8_t input_no);
 
 
 #endif /* DS18B20_DS18B20_H_ */

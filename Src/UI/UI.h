@@ -24,7 +24,7 @@ menu_t new_settings;
 */
 
 typedef struct menu_struct {
-	char * name;
+	char *name;
 	struct menu_struct * next;
 	struct menu_struct * prev;
 	struct menu_struct * child;
@@ -36,25 +36,43 @@ typedef struct menu_struct {
 	uint8_t minutes;
 }menu_t;
 
-menu_t ns_set;
-menu_t ns_time;
-menu_t ns_temp;
-menu_t ns_start;
-
-menu_t mem1_set;
-menu_t mem1_time; //= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
-menu_t mem1_temp; // = {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
-menu_t mem1_start; //= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
-
-menu_t mem2_set;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
-menu_t mem2_time;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
-menu_t mem2_temp;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
-menu_t mem2_start;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
-
-menu_t mem3_set;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
-menu_t mem3_time;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
-menu_t mem3_temp;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
-menu_t mem3_start;//= {"", NULL, NULL, NULL, NULL , NULL,0,0,0,0};
+menu_t
+heat,
+	htemp,
+	hstart,
+prog,
+	progTime,
+	progTemp,
+	progStart,
+seq,
+	seqTime1
+	,seqTemp1
+	,seqTime2
+	,seqTemp2
+	,seqTime3
+	,seqTemp3
+	,seqStart
+,mem
+	,mem1
+		,mem1Time
+		,mem1Temp
+		,mem1Start
+	,mem2
+		,mem2Time
+		,mem2Temp
+		,mem2Start
+	,mem3
+		,mem3Time
+		,mem3Temp
+		,mem3Start
+,params
+	,paramsAnalog
+	,paramsDigital
+	,paramsPS
+	,paramsHumidity
+	,paramsPressure
+	,paramsMat
+	,paramsFan;
 
 
 
@@ -85,8 +103,35 @@ void ui_menu_back(void);
 
 void ui_button_handler(uint8_t button);
 void ui_populate_with_rom_data(void);
+float ui_get_primary_temperature();
+float ui_get_set_point_temperature();
+
+// infinite_heater
+
+typedef enum {
+	ih_state_heating_display,
+	ih_state_heating_setpoit_display,
+	ih_state_exit_confirmation_display,
+	ih_state_exit,
+	ih_state_near_temp_display,
+	ih_state_last
+}e_ih_state;
 
 
+typedef enum {
+	ih_event_button_up,
+	ih_event_button_down,
+	ih_event_button_exit,
+	ih_event_button_ok,
+	ih_event_time_6s,
+	ih_event_time_2s,
+	ih_event_time_02s,
+	ih_event_temp_near,
+	ih_event_temp_far,
+	ih_event_last
+}e_ih_event;
+
+void infinite_heater_handler(e_ih_event event);
 
 
 #endif /* UI_UI_C_ */

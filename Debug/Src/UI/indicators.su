@@ -1,0 +1,5 @@
+indicators.c:32:6:idle_state	0	static
+indicators.c:39:6:idle_sensors_fault_state	0	static
+indicators.c:43:6:idle_downcnt_end_state	0	static
+indicators.c:47:6:heating_state	0	static
+indicators.c:51:6:overheat_state	0	static

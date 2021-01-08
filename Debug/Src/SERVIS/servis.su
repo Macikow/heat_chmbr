@@ -1,4 +1,4 @@
 servis.c:32:6:servis_static_data_refresh	8	static
-servis.c:45:6:refresh_temp_struct	16	static
-servis.c:61:6:servis_uart_send_packet	8	static
+servis.c:45:6:refresh_temp_struct	0	static
+servis.c:61:6:servis_uart_send_packet	0	static
 servis.c:68:6:servis_uart_send_ntc	8	static

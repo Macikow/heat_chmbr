@@ -56,8 +56,22 @@ UART_HandleTypeDef huart3;
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 #define ADC_CHANNELS 4
+#define STATUS_PRIMARY_TEMP_SENSOR_ERROR 	0
+#define STATUS_PRIMARY_TEMP_SENSOR_OK 		1
+#define STATUS_NTC_HEATING_MAT_SENSOR_ERROR 0
+#define STATUS_NTC_HEATING_MAT_SENSOR_OK	1
 
+/**
+ * adc_value  - global variable for ADC DMA convert:
+ * index is a pointer to appropriate channel :
+ * 	@0 - IN0 - NTC1
+ * 	@1 - IN1 - NTC2
+ * 	@2 - IN2 - NTC3
+ * 	@3 - INTERNAL TEMPERATURE SENSOR
+ */
 uint16_t adc_value[ADC_CHANNELS];
+
+
 void increment_ms_counter(void);
 /* counts ms from 0 to 999  - its 1s overflow*/
 volatile uint16_t ms_counter;
@@ -65,13 +79,13 @@ volatile uint16_t ms_counter;
 
 struct statusStruct
 {
-	uint8_t ds18b20_amount;
-	uint8_t ntc_amount;
-  uint8_t ntc_enable_sensor_mask; //example   1111 1xxx - only 3 socket enable
-	uint8_t heating_status;
-	uint8_t pc_connection_status;
-	uint8_t pressure_sensor_status;
-	uint8_t humidity_sensor_status;
+	uint8_t primary_temperature_sensor:1;
+	uint8_t ntc_heating_mat_sensor:1; // NTC1 SLOT
+	uint8_t ntc2_additional_sensor:1; // NTC2 SLOT
+	uint8_t ntc3_additional_sensor:1; // NTC3 SLOT
+	uint8_t pc_connection_status:1;
+	uint8_t pressure_sensor_status:1;
+	uint8_t humidity_sensor_status:1;
 }HC_status;
 
 /* USER CODE END EC */
@@ -109,33 +123,33 @@ void Error_Handler(void);
 #define ZCD_Pin GPIO_PIN_7
 #define ZCD_GPIO_Port GPIOA
 #define ZCD_EXTI_IRQn EXTI9_5_IRQn
-#define LCD_D0_Pin GPIO_PIN_0
-#define LCD_D0_GPIO_Port GPIOB
-#define LCD_D1_Pin GPIO_PIN_1
-#define LCD_D1_GPIO_Port GPIOB
-#define LCD_D1B2_Pin GPIO_PIN_2
-#define LCD_D1B2_GPIO_Port GPIOB
+#define LCD_D4_Pin GPIO_PIN_0
+#define LCD_D4_GPIO_Port GPIOB
+#define LCD_D5_Pin GPIO_PIN_1
+#define LCD_D5_GPIO_Port GPIOB
+#define LCD_D6_Pin GPIO_PIN_2
+#define LCD_D6_GPIO_Port GPIOB
 #define BUTTON_UP_Pin GPIO_PIN_12
 #define BUTTON_UP_GPIO_Port GPIOB
 #define BUTTON_UP_EXTI_IRQn EXTI15_10_IRQn
 #define BUZZER_Pin GPIO_PIN_8
 #define BUZZER_GPIO_Port GPIOA
-#define FAN_CTRL_Pin GPIO_PIN_9
-#define FAN_CTRL_GPIO_Port GPIOA
+#define VBUS_Pin GPIO_PIN_9
+#define VBUS_GPIO_Port GPIOA
 #define HEATER_CTRL_Pin GPIO_PIN_10
 #define HEATER_CTRL_GPIO_Port GPIOA
 #define LCD_RS_Pin GPIO_PIN_15
 #define LCD_RS_GPIO_Port GPIOA
-#define LCD_D3_Pin GPIO_PIN_3
-#define LCD_D3_GPIO_Port GPIOB
-#define LCD_D4_Pin GPIO_PIN_4
-#define LCD_D4_GPIO_Port GPIOB
-#define LCD_D5_Pin GPIO_PIN_5
-#define LCD_D5_GPIO_Port GPIOB
-#define LCD_D6_Pin GPIO_PIN_6
-#define LCD_D6_GPIO_Port GPIOB
-#define LCD_D7_Pin GPIO_PIN_7
+#define LCD_D7_Pin GPIO_PIN_3
 #define LCD_D7_GPIO_Port GPIOB
+#define FAN_CTRL_Pin GPIO_PIN_4
+#define FAN_CTRL_GPIO_Port GPIOB
+#define D_PULL_Pin GPIO_PIN_5
+#define D_PULL_GPIO_Port GPIOB
+#define MPL_CS_Pin GPIO_PIN_6
+#define MPL_CS_GPIO_Port GPIOB
+#define BME_CS_Pin GPIO_PIN_7
+#define BME_CS_GPIO_Port GPIOB
 #define LCD_E_Pin GPIO_PIN_8
 #define LCD_E_GPIO_Port GPIOB
 #define LCD_RW_Pin GPIO_PIN_9
