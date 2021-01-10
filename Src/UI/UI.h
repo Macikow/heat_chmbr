@@ -104,9 +104,10 @@ void ui_menu_back(void);
 void ui_button_handler(uint8_t button);
 void ui_populate_with_rom_data(void);
 float ui_get_primary_temperature();
-float ui_get_set_point_temperature();
+void ui_return_to_menu(void);
 
 // infinite_heater
+#define IH_FSM_STATES 23
 
 typedef enum {
 	ih_state_heating_display,
@@ -117,20 +118,36 @@ typedef enum {
 	ih_state_last
 }e_ih_state;
 
-
 typedef enum {
 	ih_event_button_up,
 	ih_event_button_down,
 	ih_event_button_exit,
 	ih_event_button_ok,
-	ih_event_time_6s,
-	ih_event_time_2s,
+	ih_event_time_5s,
 	ih_event_time_02s,
-	ih_event_temp_near,
-	ih_event_temp_far,
+	ih_event_near_time_5s,
+	ih_event_near_time_02s,
 	ih_event_last
 }e_ih_event;
 
+typedef e_ih_state (*pf_event_handler)(void);
+typedef struct
+{
+	e_ih_state state_machine;
+	e_ih_event state_machine_event;
+	pf_event_handler state_machine_event_handler;
+} s_state_machine;
+
+e_ih_state heating_display();
+e_ih_state set_point_display();
+e_ih_state exit_confirmation_display();
+e_ih_state exit_ih_display();
+e_ih_state near_temp_display();
+
+s_state_machine as_ih_state_machine[IH_FSM_STATES];
+
+
+void infinite_heater_populate_table(void);
 void infinite_heater_handler(e_ih_event event);
 
 
