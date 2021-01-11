@@ -42,9 +42,11 @@ uint8_t lcd_row_pos_level_1=0,lcd_row_pos_level_2=0;
 menu_t *currentPointer = (menu_t *)&htemp;
 uint8_t menu_index = 0;
 uint8_t lcd_row_pos = 0;
-enum button_e{menu_event,set_time_event,set_temp_event,heating_event};
+enum button_e{menu_event,set_time_event,set_temp_event,heating_event,p_and_s_event};
 enum button_e button_event_handler = menu_event;
-void (*button_event[])(uint8_t button) = {menu_button_event, set_time_button_event,set_temp_button_event,heat_event,program_and_sequance_event};
+void (*button_event[])(uint8_t button) = {	menu_button_event, set_time_button_event,
+											set_temp_button_event,heat_event,program_and_sequance_event,
+											};
 char time_string[8];
 char temp_string[8];
 
@@ -83,6 +85,32 @@ void infinite_heating_callback()
 	button_event_handler = heating_event;
 	infinite_heater_handler(ih_event_button_ok);
 }
+void program_callback()
+{
+	button_event_handler = p_and_s_event;
+	program_and_sequance_handler(ps_start_program_event);
+}
+void sequance_callback()
+{
+	button_event_handler = p_and_s_event;
+	program_and_sequance_handler(ps_start_sequance_event);
+}
+void mem1_callback()
+{
+	button_event_handler = p_and_s_event;
+	program_and_sequance_handler(ps_start_mem1_event);
+}
+void mem2_callback()
+{
+	button_event_handler = p_and_s_event;
+	program_and_sequance_handler(ps_start_mem2_event);
+}
+void mem3_callback()
+{
+	button_event_handler = p_and_s_event;
+	program_and_sequance_handler(ps_start_mem2_event);
+}
+
 /*
 void ui_nc_start_heating(){
 	tc_set_counter(ns_time.hours, ns_time.minutes);
@@ -130,7 +158,6 @@ void ui_time_minus()
 	}
 	menu_refresh();
 }
-
 
 void ui_temp_plus()
 {
@@ -243,6 +270,23 @@ void heat_event(uint8_t button)
 	case UI_BUTTON_BACK:
 		infinite_heater_handler(ih_event_button_exit);
 		break;
+	}
+}
+
+void program_and_sequance_event(uint8_t button)
+{
+	switch(button)
+	{
+		case UI_BUTTON_UP: //  do nothing
+			break;
+		case UI_BUTTON_DOWN:
+			break;
+		case UI_BUTTON_OK: // do nothing
+			infinite_heater_handler(ps_event_button_ok);
+			break;
+		case UI_BUTTON_BACK:
+			infinite_heater_handler(ps_event_button_exit);
+			break;
 	}
 }
 
@@ -608,7 +652,7 @@ void ui_populate_with_rom_data(void)
 	build_menu(&prog,"SET PROGRAM",    &seq,	&heat,	&progTime,	NULL,	NULL,0,25.0f,0,0);
 		build_menu(&progTime,"SET TIME",			&progTemp,	NULL,			NULL,	&prog,	ui_set_time_callback,SET_OPTION_TIME,25.0f,0,0);
 		build_menu(&progTemp,"SET TEMP",			&progStart,	&progTime,NULL,	&prog,	ui_set_temp_callback,SET_OPTION_TEMP,25.0f,0,0);
-		build_menu(&progStart,"START PROGRAM",NULL,				&progTemp,NULL,	&prog,	NULL,0,25.0f,0,0);
+		build_menu(&progStart,"START PROGRAM",NULL,				&progTemp,NULL,	&prog,	&program_callback,0,25.0f,0,0);
 	build_menu(&seq,"SET SEQUANCE",			&mem,&prog,&seqTime1,NULL,NULL,0,25.0f,0,0);
 		build_menu(&seqTime1,"SET TIME1",&seqTemp1,NULL,		NULL,&seq,ui_set_time_callback,SET_OPTION_TIME,25.0f,0,0);
 		build_menu(&seqTemp1,"SET TEMP1",&seqTime2,&seqTime1,	NULL,&seq,ui_set_temp_callback,SET_OPTION_TEMP,25.0f,0,0);
@@ -616,20 +660,20 @@ void ui_populate_with_rom_data(void)
 		build_menu(&seqTemp2,"SET TEMP2",&seqTime3,&seqTime2,	NULL,&seq,ui_set_temp_callback,SET_OPTION_TEMP,25.0f,0,0);
 		build_menu(&seqTime3,"SET TIME3",&seqTemp3,&seqTemp2,	NULL,&seq,ui_set_time_callback,SET_OPTION_TIME,25.0f,0,0);
 		build_menu(&seqTemp3,"SET TEMP3",&seqStart,&seqTime3,	NULL,&seq,ui_set_temp_callback,SET_OPTION_TEMP,25.0f,0,0);
-		build_menu(&seqStart,"START SEQUANCE",NULL,&seqTemp3,	NULL,&seq,NULL,0,25.0f,0,0);
+		build_menu(&seqStart,"START SEQUANCE",NULL,&seqTemp3,	NULL,&seq,&sequance_callback,0,25.0f,0,0);
 	build_menu(&mem,"PROGRAM MEM",	&params,&seq,&mem1,NULL,	NULL,0,25.0f,0,0);
 		build_menu(&mem1,"PROGRAM MEM1",&mem2,NULL,&mem1Time,	&mem,NULL,0,25.0f,0,0);
 			build_menu(&mem1Time,"TIME MEM1",		&mem1Temp, NULL,		 NULL,&mem1,NULL,SET_OPTION_TIME,25.0f,0,0);
 			build_menu(&mem1Temp,"TEMP MEM1",		&mem1Start,&mem1Time,NULL,&mem1,NULL,SET_OPTION_TEMP,25.0f,0,0);
-			build_menu(&mem1Start,"START MEM1",	NULL,			 &mem1Temp,NULL,&mem1,NULL,0,25.0f,0,0);
+			build_menu(&mem1Start,"START MEM1",	NULL,			 &mem1Temp,NULL,&mem1,&mem1_callback,0,25.0f,0,0);
 		build_menu(&mem2,"PROGRAM MEM2",&mem3,&mem1,&mem2Time,&mem,NULL,0,25.0f,0,0);
 			build_menu(&mem2Time,"TIME MEM2",  &mem2Temp, NULL,			NULL,&mem2,NULL,SET_OPTION_TIME,25.0f,0,0);
 			build_menu(&mem2Temp,"TEMP MEM2",	 &mem2Start,&mem2Time,NULL,&mem2,NULL,SET_OPTION_TEMP,25.0f,0,0);
-			build_menu(&mem2Start,"START MEM2",NULL,			&mem2Temp,NULL,&mem2,NULL,0,25.0f,0,0);
+			build_menu(&mem2Start,"START MEM2",NULL,			&mem2Temp,NULL,&mem2,&mem2_callback,0,25.0f,0,0);
 		build_menu(&mem3,"PROGRAM MEM3",NULL,&mem2,&mem3Time,&mem,NULL,0,25.0f,0,0);
 			build_menu(&mem3Time,"TIME MEM3",		&mem3Temp,	NULL,			NULL,	&mem3,NULL,SET_OPTION_TIME,25.0f,0,0);
 			build_menu(&mem3Temp,"TEMP MEM3",		&mem3Start,	&mem3Time,NULL,	&mem3,NULL,SET_OPTION_TEMP,25.0f,0,0);
-			build_menu(&mem3Start,"START MEM3",	NULL,				&mem3Temp,NULL,	&mem3,NULL,0,25.0f,0,0);
+			build_menu(&mem3Start,"START MEM3",	NULL,				&mem3Temp,NULL,	&mem3,&mem3_callback,0,25.0f,0,0);
 	build_menu(&params,"PARAMETERS",	NULL,&mem,&paramsAnalog,NULL,NULL,0,25.0f,0,0);
 		build_menu(&paramsAnalog,"ANALOG SENSOR",			&paramsDigital,	NULL,						NULL,	&params,NULL,0,25.0f,0,0);
 		build_menu(&paramsDigital,"DIGITAL SENSOR",		&paramsPS,			&paramsAnalog,	NULL,	&params,NULL,0,25.0f,0,0);

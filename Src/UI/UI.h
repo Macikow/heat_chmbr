@@ -108,6 +108,8 @@ void ui_populate_with_rom_data(void);
 float ui_get_primary_temperature();
 void ui_return_to_menu(void);
 
+
+//-------------------------------------Infinite heater -------------------------------------
 // infinite_heater
 #define IH_FSM_STATES 23
 
@@ -151,6 +153,12 @@ s_state_machine as_ih_state_machine[IH_FSM_STATES];
 
 void infinite_heater_populate_table(void);
 void infinite_heater_handler(e_ih_event event);
+
+
+//------------------------------------------Program  and Sequance -------------------------------------------
+
+
+
 
 
 #endif /* UI_UI_C_ */
