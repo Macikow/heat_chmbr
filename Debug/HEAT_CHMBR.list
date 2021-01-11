@@ -41,11 +41,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  18 .debug_line   00012774  00000000  00000000  00072321  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .debug_str    0007b7d7  00000000  00000000  00084a95  2**0
+ 19 .debug_str    0007b7e2  00000000  00000000  00084a95  2**0
                   CONTENTS, READONLY, DEBUGGING
- 20 .comment      0000007b  00000000  00000000  0010026c  2**0
+ 20 .comment      0000007b  00000000  00000000  00100277  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00003d84  00000000  00000000  001002e8  2**2
+ 21 .debug_frame  00003d84  00000000  00000000  001002f4  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -11758,7 +11758,7 @@ e_ih_state exit_ih_display()
   float current_temp = ui_get_primary_temperature();
  8005126:	f7ff ff49 	bl	8004fbc <ui_get_primary_temperature>
  800512a:	4605      	mov	r5, r0
-  float differance = htemp.temp- 25.0f;
+  float differance = htemp.temp- 20.0f;
  800512c:	2200      	movs	r2, #0
  800512e:	4b24      	ldr	r3, [pc, #144]	; (80051c0 <progress_bar_display+0x9c>)
  8005130:	4924      	ldr	r1, [pc, #144]	; (80051c4 <progress_bar_display+0xa0>)
@@ -11808,7 +11808,7 @@ e_ih_state exit_ih_display()
  800518c:	b2e4      	uxtb	r4, r4
  800518e:	2c06      	cmp	r4, #6
  8005190:	d812      	bhi.n	80051b8 <progress_bar_display+0x94>
-	float pb_value = 25.0f + (float)(accuracy*i);
+	float pb_value = 20.0f + (float)(accuracy*i);
  8005192:	4620      	mov	r0, r4
  8005194:	f7fb fd84 	bl	8000ca0 <__aeabi_i2f>
  8005198:	4631      	mov	r1, r6
@@ -11830,14 +11830,14 @@ e_ih_state exit_ih_display()
  80051ba:	f7fe feb7 	bl	8003f2c <lcd_char>
 }
  80051be:	bd70      	pop	{r4, r5, r6, pc}
- 80051c0:	40390000 	.word	0x40390000
+ 80051c0:	40340000 	.word	0x40340000
  80051c4:	20000778 	.word	0x20000778
  80051c8:	40e00000 	.word	0x40e00000
  80051cc:	2000001c 	.word	0x2000001c
  80051d0:	20001094 	.word	0x20001094
  80051d4:	20000020 	.word	0x20000020
  80051d8:	2000002c 	.word	0x2000002c
- 80051dc:	41c80000 	.word	0x41c80000
+ 80051dc:	41a00000 	.word	0x41a00000
 
 080051e0 <heating_display>:
 {
@@ -12189,7 +12189,7 @@ e_ih_state near_temp_display()
  80054a0:	701a      	strb	r2, [r3, #0]
 	return ih_state_near_temp_display;
 }
- 80054a2:	2004      	movs	r0, #4
+ 80054a2:	2005      	movs	r0, #5
  80054a4:	bd10      	pop	{r4, pc}
  80054a6:	bf00      	nop
  80054a8:	20000048 	.word	0x20000048
@@ -12330,37 +12330,37 @@ void infinite_heater_populate_table()
 	/*18*/	populte_exec(17,ih_state_near_temp_display,ih_event_time_02s,near_temp_display);
  800559e:	463b      	mov	r3, r7
  80055a0:	2205      	movs	r2, #5
- 80055a2:	2104      	movs	r1, #4
+ 80055a2:	4611      	mov	r1, r2
  80055a4:	2011      	movs	r0, #17
  80055a6:	f7ff ff83 	bl	80054b0 <populte_exec>
 	/*19*/	populte_exec(18,ih_state_near_temp_display,ih_event_button_up,set_point_display);
  80055aa:	4623      	mov	r3, r4
  80055ac:	2200      	movs	r2, #0
- 80055ae:	2104      	movs	r1, #4
+ 80055ae:	2105      	movs	r1, #5
  80055b0:	2012      	movs	r0, #18
  80055b2:	f7ff ff7d 	bl	80054b0 <populte_exec>
 	/*20*/	populte_exec(19,ih_state_near_temp_display,ih_event_button_down,set_point_display);
  80055b6:	4623      	mov	r3, r4
  80055b8:	2201      	movs	r2, #1
- 80055ba:	2104      	movs	r1, #4
+ 80055ba:	2105      	movs	r1, #5
  80055bc:	2013      	movs	r0, #19
  80055be:	f7ff ff77 	bl	80054b0 <populte_exec>
 	/*21*/	populte_exec(20,ih_state_near_temp_display,ih_event_button_exit,exit_confirmation_display);
  80055c2:	4633      	mov	r3, r6
  80055c4:	2202      	movs	r2, #2
- 80055c6:	2104      	movs	r1, #4
+ 80055c6:	2105      	movs	r1, #5
  80055c8:	2014      	movs	r0, #20
  80055ca:	f7ff ff71 	bl	80054b0 <populte_exec>
 	/*22*/	populte_exec(21,ih_state_near_temp_display,ih_event_time_5s,set_point_display);
  80055ce:	4623      	mov	r3, r4
  80055d0:	2204      	movs	r2, #4
- 80055d2:	4611      	mov	r1, r2
+ 80055d2:	2105      	movs	r1, #5
  80055d4:	2015      	movs	r0, #21
  80055d6:	f7ff ff6b 	bl	80054b0 <populte_exec>
 	/*23*/	populte_exec(22,ih_state_near_temp_display,ih_event_near_time_5s,set_point_display);
  80055da:	4623      	mov	r3, r4
  80055dc:	2206      	movs	r2, #6
- 80055de:	2104      	movs	r1, #4
+ 80055de:	2105      	movs	r1, #5
  80055e0:	2016      	movs	r0, #22
  80055e2:	f7ff ff65 	bl	80054b0 <populte_exec>
 }
@@ -12380,9 +12380,9 @@ void infinite_heater_handler(e_ih_event event)
 	if( (actual_state < ih_state_last) && (event < ih_event_last))
  80055fc:	4b12      	ldr	r3, [pc, #72]	; (8005648 <infinite_heater_handler+0x4c>)
  80055fe:	7819      	ldrb	r1, [r3, #0]
- 8005600:	2904      	cmp	r1, #4
+ 8005600:	2905      	cmp	r1, #5
  8005602:	d820      	bhi.n	8005646 <infinite_heater_handler+0x4a>
- 8005604:	2807      	cmp	r0, #7
+ 8005604:	2806      	cmp	r0, #6
  8005606:	d804      	bhi.n	8005612 <infinite_heater_handler+0x16>
 	{
 		for(uint8_t state_counter = 0; state_counter < IH_FSM_STATES ; state_counter++)

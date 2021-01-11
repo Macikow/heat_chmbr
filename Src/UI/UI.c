@@ -44,7 +44,7 @@ uint8_t menu_index = 0;
 uint8_t lcd_row_pos = 0;
 enum button_e{menu_event,set_time_event,set_temp_event,heating_event};
 enum button_e button_event_handler = menu_event;
-void (*button_event[])(uint8_t button) = {menu_button_event, set_time_button_event,set_temp_button_event,heat_event};
+void (*button_event[])(uint8_t button) = {menu_button_event, set_time_button_event,set_temp_button_event,heat_event,program_and_sequance_event};
 char time_string[8];
 char temp_string[8];
 

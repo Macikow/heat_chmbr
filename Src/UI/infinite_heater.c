@@ -28,7 +28,7 @@ void progress_bar_display()
 {
 
   float current_temp = ui_get_primary_temperature();
-  float differance = htemp.temp- 25.0f;
+  float differance = htemp.temp- 20.0f;
   float accuracy = differance/PROGRES_BAR_RESOLUTION ;
   lcd_buf_go_to(0,1);
   lcd_buf_write_text(&ACTUAL_TEMP[0]);
@@ -39,7 +39,7 @@ void progress_bar_display()
   lcd_char(' ');
   for(uint8_t i = 0 ; i < PROGRES_BAR_RESOLUTION ; i++)
   {
-	float pb_value = 25.0f + (float)(accuracy*i);
+	float pb_value = 20.0f + (float)(accuracy*i);
     if( pb_value  >= current_temp)
     {
       lcd_char(0x00);
