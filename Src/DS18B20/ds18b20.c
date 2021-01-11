@@ -535,7 +535,7 @@ uint8_t ds18b20_set_default_resolution(uint8_t sensorNumber, uint8_t input_no)
 uint16_t ds18b20_get_scratchpad_temperature(uint8_t sensor_number,uint8_t input_no)
 {
 	uint16_t temperature;
-	if(ds18b20_convertT(input_no) == CONVERTION_ERROR) return CONVERTION_ERROR;
+	//if(ds18b20_convertT(input_no) == CONVERTION_ERROR) return CONVERTION_ERROR;
 	if(ds18b20_read_scratchpad(sensor_number,input_no) != READ_OK ) return GET_TEMPERATURE_ERROR;
 	temperature = scratchpad[input_no][sensor_number].temperature;
 	return temperature;

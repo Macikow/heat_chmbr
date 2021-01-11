@@ -104,7 +104,7 @@ void ui_menu_back(void);
 void ui_button_handler(uint8_t button);
 void ui_populate_with_rom_data(void);
 float ui_get_primary_temperature();
-float ui_get_set_point_temperature();
+void ui_return_to_menu(void);
 
 // infinite_heater
 
@@ -113,6 +113,7 @@ typedef enum {
 	ih_state_heating_setpoit_display,
 	ih_state_exit_confirmation_display,
 	ih_state_exit,
+	ih_state_stabilizing_temp_display,
 	ih_state_near_temp_display,
 	ih_state_last
 }e_ih_state;
@@ -123,11 +124,9 @@ typedef enum {
 	ih_event_button_down,
 	ih_event_button_exit,
 	ih_event_button_ok,
-	ih_event_time_6s,
-	ih_event_time_2s,
+	ih_event_time_5s,
 	ih_event_time_02s,
-	ih_event_temp_near,
-	ih_event_temp_far,
+	ih_event_near_time_5s,   //event when delta T < 2 st C
 	ih_event_last
 }e_ih_event;
 
