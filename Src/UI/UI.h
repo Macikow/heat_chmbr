@@ -157,8 +157,76 @@ void infinite_heater_handler(e_ih_event event);
 
 //------------------------------------------Program  and Sequance -------------------------------------------
 
+#define PS_FSM_STATES 140
 
+typedef enum {
+	ps_neutral_state,
+	ps_program_heating_state,
+	ps_program_stabilation_state,
+	ps_program_sets_display_state,
+	ps_program_exit_ask_state,
+	ps_program_end_time_state,
+	ps_sequance_1_heating_state,
+	ps_sequance_1_stablilization_state,
+	ps_sequance_1_sets_display_state,
+	ps_sequance_1_exit_ask_state,
+	ps_sequance_2_heating_state,
+	ps_sequance_2_sets_display_state,
+	ps_sequance_2_exit_ask_state,
+	ps_sequance_2_stablilization_state,
+	ps_sequance_3_heating_state,
+	ps_sequance_3_sets_display_state,
+	ps_sequance_3_stablilization_state,
+	ps_sequance_3_exit_ask_state,
+	ps_sequance_time_end_state,
+	ps_mem1_heating_state,
+	ps_mem1_sets_display_state,
+	ps_mem1_stablilization_state,
+	ps_mem1_exit_ask_state,
+	ps_mem1_end_time_state,
+	ps_mem2_heating_state,
+	ps_mem2_sets_display_state,
+	ps_mem2_stablilization_state,
+	ps_mem2_exit_ask_state,
+	ps_mem2_end_time_state,
+	ps_mem3_heating_state,
+	ps_mem3_sets_display_state,
+	ps_mem3_stablilization_state,
+	ps_mem3_exit_ask_state,
+	ps_mem3_end_time_state,
+	ps_exit_state,
+}e_ps_state;
 
+typedef enum {
+	ps_event_program_start,
+	ps_event_program_time_end,
+	ps_event_sequance_start,
+	ps_event_mem1_start,
+	ps_event_mem1_time_end,
+	ps_event_mem2_start,
+	ps_event_mem2_time_end,
+	ps_event_mem3_start,
+	ps_event_mem3_time_end,
+	ps_event_button_ok,
+	ps_event_button_exit,
+	ps_event_time_5s,
+	ps_event_time_02s,
+	ps_event_near_time_5s,
+	ps_event_seq1_time_end,
+	ps_event_seq2_time_end,
+	ps_event_seq3_time_end,
+	ps_event_last
+}e_ps_event;
 
+typedef e_ps_state (*pf_ps_event_handler)(void);
+typedef struct
+{
+	e_ps_state state_machine;
+	e_ps_event state_machine_event;
+	pf_ps_event_handler state_machine_event_handler;
+} ps_state_machine;
+
+void program_and_sequance_event(uint8_t button);
+void program_and_sequance_handler( e_ps_event event);
 
 #endif /* UI_UI_C_ */

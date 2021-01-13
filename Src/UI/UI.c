@@ -88,27 +88,27 @@ void infinite_heating_callback()
 void program_callback()
 {
 	button_event_handler = p_and_s_event;
-	program_and_sequance_handler(ps_start_program_event);
+	program_and_sequance_handler(ps_event_program_start);
 }
 void sequance_callback()
 {
 	button_event_handler = p_and_s_event;
-	program_and_sequance_handler(ps_start_sequance_event);
+	program_and_sequance_handler(ps_event_sequance_start);
 }
 void mem1_callback()
 {
 	button_event_handler = p_and_s_event;
-	program_and_sequance_handler(ps_start_mem1_event);
+	program_and_sequance_handler(ps_event_mem1_start);
 }
 void mem2_callback()
 {
 	button_event_handler = p_and_s_event;
-	program_and_sequance_handler(ps_start_mem2_event);
+	program_and_sequance_handler(ps_event_mem2_start);
 }
 void mem3_callback()
 {
 	button_event_handler = p_and_s_event;
-	program_and_sequance_handler(ps_start_mem2_event);
+	program_and_sequance_handler(ps_event_mem3_start);
 }
 
 /*
@@ -195,7 +195,7 @@ void ui_infinite_heating_temp_minus() // TODO sprawdzić temperature otoczenie i
 	}
 }
 
-
+// ---------------------------button handler finction -------------------------------
 void menu_button_event(uint8_t button)
 {
 	switch(button)
@@ -277,20 +277,20 @@ void program_and_sequance_event(uint8_t button)
 {
 	switch(button)
 	{
-		case UI_BUTTON_UP: //  do nothing
+		case UI_BUTTON_UP: // do nothing
 			break;
-		case UI_BUTTON_DOWN:
+		case UI_BUTTON_DOWN:	// do nothing
 			break;
-		case UI_BUTTON_OK: // do nothing
-			infinite_heater_handler(ps_event_button_ok);
+		case UI_BUTTON_OK:
+			program_and_sequance_handler(ps_event_button_ok);
 			break;
 		case UI_BUTTON_BACK:
-			infinite_heater_handler(ps_event_button_exit);
+			program_and_sequance_handler(ps_event_button_exit);
 			break;
 	}
 }
 
-
+// ----------------------------------- poiter to button handler -------------------
 void ui_button_handler(uint8_t button)
 {
 	(*button_event[(uint8_t)button_event_handler])(button);
