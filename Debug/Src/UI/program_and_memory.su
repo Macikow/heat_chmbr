@@ -1,0 +1,9 @@
+program_and_memory.c:78:12:program_exit_confirmation_display	8	static
+program_and_memory.c:90:12:program_countdown_timer_end	8	static
+program_and_memory.c:47:12:program_set_point_display	8	static
+program_and_memory.c:64:12:program_countdown_timer_display	24	static
+program_and_memory.c:21:12:program_run_display	16	static
+program_and_memory.c:101:12:exit_pm	8	static
+program_and_memory.c:109:6:populte_pm	4	static
+program_and_memory.c:116:6:program_mode_populate_table	24	static
+program_and_memory.c:146:6:program_mode_handler	8	static

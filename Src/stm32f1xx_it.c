@@ -226,13 +226,27 @@ void ADC1_2_IRQHandler(void)
   */
 void EXTI9_5_IRQHandler(void)
 {
+	static uint8_t downcount_10ms_timer;
   /* USER CODE BEGIN EXTI9_5_IRQn 0 */
 	if(__HAL_GPIO_EXTI_GET_FLAG(ZCD_Pin))
 	{
 		HAL_TIM_Base_Start_IT(&htim1);
 		HEATER_CTRL_GPIO_Port->BRR = HEATER_CTRL_Pin;
 		FAN_CTRL_GPIO_Port->BRR = FAN_CTRL_Pin;
+		if(tc_get_status() == TC_STATUS_ENABLE)
+		{
+			if(++downcount_10ms_timer == 100)
+			{
+				downcount_10ms_timer=0;
+				tc_set_dc_flag(COUNTDOWN_FLAG_ENABLE);
+			}
+		}
+		else
+		{
+			downcount_10ms_timer = 0;
+		}
 		//LED_RED_GPIO_Port->BRR = LED_RED_Pin;
+
 	}
   /* USER CODE END EXTI9_5_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_7);

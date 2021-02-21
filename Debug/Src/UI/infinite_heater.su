@@ -1,10 +1,7 @@
-infinite_heater.c:152:12:exit_ih_display	8	static
-infinite_heater.c:27:6:progress_bar_display	16	static
-infinite_heater.c:103:12:heating_display	16	static
-infinite_heater.c:124:12:set_point_display	8	static
-infinite_heater.c:143:12:exit_confirmation_display	8	static
-infinite_heater.c:55:6:temp_ruler	32	static
-infinite_heater.c:163:12:near_temp_display	8	static
-infinite_heater.c:180:6:populte_exec	4	static
-infinite_heater.c:187:6:infinite_heater_populate_table	24	static
-infinite_heater.c:221:6:infinite_heater_handler	8	static
+infinite_heater.c:67:12:infinite_set_display	8	static
+infinite_heater.c:105:12:exit_confirmation_display	8	static
+infinite_heater.c:87:12:set_point_display	8	static
+infinite_heater.c:114:12:exit_ih	8	static
+infinite_heater.c:142:6:populte_exec	4	static
+infinite_heater.c:149:6:infinite_heater_populate_table	16	static
+infinite_heater.c:171:6:infinite_heater_handler	8	static

@@ -1,4 +1,4 @@
-Src/UI/program&sequance.o: ../Src/UI/program&sequance.c ../Inc/main.h \
+Src/UI/program_and_memory.o: ../Src/UI/program_and_memory.c ../Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \

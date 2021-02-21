@@ -193,6 +193,11 @@
 /* Variables' number */
 #define NB_OF_VAR             ((uint8_t)0x09)
 
+
+#define ROM_MEM1 1
+#define ROM_MEM2 2
+#define ROM_MEM3 3
+
 /* Exported types ------------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
@@ -212,6 +217,11 @@ void rom_wite_new_set_data(uint8_t ui_time_hours, uint8_t ui_time_minutes , doub
 void rom_wite_PID_data(uint8_t P, uint8_t I, uint8_t D);
 
 void rom_value_init(void);
+void rom_refresh(void);
+
+void rom_mem2_exec();
+void rom_mem3_exec();
+
 #endif /* __EEPROM_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

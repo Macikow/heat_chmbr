@@ -84,7 +84,8 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-    HAL_Init();
+
+	HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -108,7 +109,9 @@ int main(void)
   ds18b20_initalize(0);
   ntc_init();
   rom_value_init();
+  ui_refresh_memory_data();
   ui_populate_with_rom_data();
+  tc_init();
   __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1| TIM_IT_CC2);
 
   //PID_manual_settings();
@@ -127,9 +130,11 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  lcd_circle_bufer_refresh();
 	  ui_handler();
+	  tc_down_counter();
 	  ds18b20_convert_temperature(10);  //duration 5ms [10 - 15]ms read in  10 + 750 ms  = 95ms
 	  ds18b20_read_primary_sensor(770); //duration 5ms [835 - 940]ms read in  10 + 750ms  = 95ms
 	  ntc_handler(100);
+
 	 // ds18b20_get_scratchpad_temperature(175,0,0);
 	  //ds18b20_get_scratchpad_temperature(200,0,1);
   }
@@ -460,7 +465,7 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin : ZCD_Pin */
   GPIO_InitStruct.Pin = ZCD_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(ZCD_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LCD_D4_Pin LCD_D5_Pin LCD_D6_Pin LCD_D7_Pin 

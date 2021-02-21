@@ -18,8 +18,17 @@
 volatile uint8_t ui_handler_flag;
 
 
+#define PROGRES_BAR_RESOLUTION 7
+#define PROGRES_BAR_X 11
+#define PROGRES_BAR_Y 1
 
 
+
+uint8_t str_table[20];
+
+
+void progress_bar_display();
+void ui_refresh_memory_data(void);
 /*
 menu_t new_settings;
 
@@ -109,17 +118,15 @@ float ui_get_primary_temperature();
 void ui_return_to_menu(void);
 
 
-//-------------------------------------Infinite heater -------------------------------------
+//-------------------------------------Infinite mode -------------------------------------
 // infinite_heater
-#define IH_FSM_STATES 23
+#define IH_FSM_STATES 16
 
 typedef enum {
-	ih_state_heating_display,
-	ih_state_heating_setpoit_display,
+	ih_state_infinite_set_diplay,
+	ih_state_setpoit_display,
 	ih_state_exit_confirmation_display,
 	ih_state_exit,
-	ih_state_stabilizing_temp_display,
-	ih_state_near_temp_display,
 	ih_state_last
 }e_ih_state;
 
@@ -128,9 +135,8 @@ typedef enum {
 	ih_event_button_down,
 	ih_event_button_exit,
 	ih_event_button_ok,
-	ih_event_time_5s,
-	ih_event_time_02s,
-	ih_event_near_time_5s,
+	ih_event_time_7s,
+	ih_event_time_1s,
 	ih_event_last
 }e_ih_event;
 
@@ -142,11 +148,10 @@ typedef struct
 	pf_event_handler state_machine_event_handler;
 } s_state_machine;
 
-e_ih_state heating_display();
+e_ih_state infinite_set_display();
 e_ih_state set_point_display();
 e_ih_state exit_confirmation_display();
-e_ih_state exit_ih_display();
-e_ih_state near_temp_display();
+e_ih_state exit_ih();
 
 s_state_machine as_ih_state_machine[IH_FSM_STATES];
 
@@ -155,78 +160,48 @@ void infinite_heater_populate_table(void);
 void infinite_heater_handler(e_ih_event event);
 
 
-//------------------------------------------Program  and Sequance -------------------------------------------
+//------------------------------------- program mode-------------------------------------
 
-#define PS_FSM_STATES 140
-
-typedef enum {
-	ps_neutral_state,
-	ps_program_heating_state,
-	ps_program_stabilation_state,
-	ps_program_sets_display_state,
-	ps_program_exit_ask_state,
-	ps_program_end_time_state,
-	ps_sequance_1_heating_state,
-	ps_sequance_1_stablilization_state,
-	ps_sequance_1_sets_display_state,
-	ps_sequance_1_exit_ask_state,
-	ps_sequance_2_heating_state,
-	ps_sequance_2_sets_display_state,
-	ps_sequance_2_exit_ask_state,
-	ps_sequance_2_stablilization_state,
-	ps_sequance_3_heating_state,
-	ps_sequance_3_sets_display_state,
-	ps_sequance_3_stablilization_state,
-	ps_sequance_3_exit_ask_state,
-	ps_sequance_time_end_state,
-	ps_mem1_heating_state,
-	ps_mem1_sets_display_state,
-	ps_mem1_stablilization_state,
-	ps_mem1_exit_ask_state,
-	ps_mem1_end_time_state,
-	ps_mem2_heating_state,
-	ps_mem2_sets_display_state,
-	ps_mem2_stablilization_state,
-	ps_mem2_exit_ask_state,
-	ps_mem2_end_time_state,
-	ps_mem3_heating_state,
-	ps_mem3_sets_display_state,
-	ps_mem3_stablilization_state,
-	ps_mem3_exit_ask_state,
-	ps_mem3_end_time_state,
-	ps_exit_state,
-}e_ps_state;
+#define PM_FSM_STATES 22
 
 typedef enum {
-	ps_event_program_start,
-	ps_event_program_time_end,
-	ps_event_sequance_start,
-	ps_event_mem1_start,
-	ps_event_mem1_time_end,
-	ps_event_mem2_start,
-	ps_event_mem2_time_end,
-	ps_event_mem3_start,
-	ps_event_mem3_time_end,
-	ps_event_button_ok,
-	ps_event_button_exit,
-	ps_event_time_5s,
-	ps_event_time_02s,
-	ps_event_near_time_5s,
-	ps_event_seq1_time_end,
-	ps_event_seq2_time_end,
-	ps_event_seq3_time_end,
-	ps_event_last
-}e_ps_event;
+	pm_state_program_run_display,
+	pm_state_setpoit_display,
+	pm_state_countdown_display,
+	pm_state_exit_confirmation_display,
+	pm_state_countdown_end,
+	pm_state_last
+}e_pm_state;
 
-typedef e_ps_state (*pf_ps_event_handler)(void);
+typedef enum {
+	pm_event_button_exit,
+	pm_event_button_ok,
+	pm_event_time_7s,
+	pm_event_time_1s,
+	pm_event_countdown_end,
+	pm_event_last
+}e_pm_event;
+
+typedef e_pm_state (*pm_event_handler)(void);
 typedef struct
 {
-	e_ps_state state_machine;
-	e_ps_event state_machine_event;
-	pf_ps_event_handler state_machine_event_handler;
-} ps_state_machine;
+	e_pm_state state_machine;
+	e_pm_event state_machine_event;
+	pm_event_handler state_machine_event_handler;
+} s_pm_state_machine;
 
-void program_and_sequance_event(uint8_t button);
-void program_and_sequance_handler( e_ps_event event);
+e_pm_state program_run_display();
+e_pm_state program_set_point_display();
+e_pm_state program_countdown_timer_display();
+e_pm_state program_exit_confirmation_display();
+e_pm_state program_countdown_timer_end();
+e_pm_state exit_pm();
+
+s_pm_state_machine as_pm_state_machine[PM_FSM_STATES];
+
+void program_mode_populate_table();
+void program_mode_handler(e_pm_event event);
+
+
 
 #endif /* UI_UI_C_ */
